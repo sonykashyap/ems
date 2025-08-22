@@ -11,7 +11,7 @@ const AdminLogin =  React.lazy(()=> import('./pages/admin/login/Login'));
 const PrivateAdminRoute = React.lazy(()=> import('./PrivateRoute'));
 const Profile = React.lazy(()=> import('./pages/admin/profile/Profile'));
 const Spinner = React.lazy(()=> import('@/components/spinner/Spinner'));
-
+import { Toaster } from './components/ui/sonner'
 function App() {
 
 
@@ -19,6 +19,7 @@ function App() {
     <>
       <BrowserRouter>
         <Suspense fallback={<Spinner />}>
+        <Toaster position="top-center" theme="light" />
           <Routes>
             {/* User protected Routes */}
             <Route path="/" element={<PrivateAdminRoute />} >
