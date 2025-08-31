@@ -1,19 +1,16 @@
-import React from 'react';
-import ReactLogo from '@/assets/react.svg';
-import {useNavigate } from 'react-router';
+import React, { useEffect } from 'react';
 import './Home.scss';
 
 
 const Home = () => {
-    const navigate = useNavigate();
-    const logout = () => {
-        localStorage.removeItem('token');
-        navigate("/login");
-    }
+
+    useEffect(()=>{
+        console.log("Home called");
+    }, []);
+    
     return(
         <>
-            <h1>Home</h1>
-            <button className='text-rose-500' onClick={logout}>Logout</button>
+            <h1>User Home</h1>
         </>
         
         

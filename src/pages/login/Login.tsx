@@ -14,14 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { redirect, useNavigate } from 'react-router';
 import axiosInstance from "@/axios/axiosInstance";
-import { error } from 'console';
-import { Toaster } from '@/components/ui/sonner';
 
 
 type FormState = {
   email: string;
   error?: string;
-  password?: string
+  password?: string;
+  passwordError?: string;
 };
 
 
@@ -29,10 +28,10 @@ type FormState = {
 const Login = () =>{
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [, setToaster] = useState(false);
+    const [apiError, setAPIError] = useState(false);
     const [state, submitForm, isPending] = useActionState<FormState, FormData>(
     submitEmail,
-    { email: '', error: undefined, password : '' }
+    { email: '', error: undefined, password : '', passwordError: undefined }
   );
   
   async function submitEmail(
@@ -47,7 +46,7 @@ const Login = () =>{
   }
   if (!password || password.length < 8) {
 
-    return { ...prevState, error: 'Password less than 8 characters' };
+    return { ...prevState, passwordError: 'Password less than 8 characters' };
   }
 
   // Simulate API request
@@ -55,6 +54,7 @@ const Login = () =>{
     const response = await axiosInstance.post("/login", {email: email, password: password});
     if(response.status == 200){
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.user.role);
       navigate("/");
     }
     // await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -63,6 +63,14 @@ const Login = () =>{
     if(error.response?.status == 404){
       toast(`${error.response.data.message}`, {
         classNames: {
+          toast: "!bg-red-200",
+          title: "font-bold !text-red-600",
+        },
+      });
+    }else if(error.response?.status == 400){
+      toast(`${error.response.data.message}`, {
+        classNames: {
+          toast: "!bg-red-200",
           title: "font-bold !text-red-600",
         },
       });
@@ -105,12 +113,12 @@ const Login = () =>{
                             Forgot your password?
                             </a>
                         </div>
-                      <div className='relative'>
-                        <Input id="password" type={showPassword ? 'text' : 'password'} name='password' />
-                        <span className='text-xs absolute top-2 right-2 hover:cursor-pointer' onClick={()=> setShowPassword(!showPassword)}>{showPassword ? "Hide" : "Show"}</span>
-                      </div>
+                        <div className='relative'>
+                          <Input id="password" type={showPassword ? 'text' : 'password'} name='password' />
+                          <span className='text-xs absolute top-2 right-2 hover:cursor-pointer' onClick={()=> setShowPassword(!showPassword)}>{showPassword ? "Hide" : "Show"}</span>
+                        </div>
                       
-                      {state.error && <p> {state.error} </p>}
+                        {state.passwordError && <p> {state.passwordError} </p>}
                       </div>
                   </div>
                   {/* {state.email && <p> {state.email} </p>} */}

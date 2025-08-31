@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import AdminLayout from './layouts/AdminLayouts';
+
 
 // Example authentication check
 let url = "/login";
@@ -22,7 +24,7 @@ const isAuthenticated = () => {
 
 // PrivateRoute Component
 const PrivateRoute = () => {
-  return isAuthenticated() ? <Outlet /> : <Navigate to={url} />;
+  return isAuthenticated() ? <AdminLayout> <Outlet />  </AdminLayout>: <Navigate to={url} />;
 };
 
 export default PrivateRoute;
