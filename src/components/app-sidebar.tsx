@@ -51,14 +51,11 @@ export const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center justify-between">
-          {/* <SidebarGroupLabel>EMS</SidebarGroupLabel> */}
-          <span className="font-bold text-purple-500">EMS</span>
-          {/* <SidebarTrigger />  */}
+          <span className="font-bold text-purple-700">EMS</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-            {/* <SidebarGroupLabel>EMS</SidebarGroupLabel> */}
             <SidebarGroupContent>
                 <SidebarMenu>
                   {items.map((item) => (
