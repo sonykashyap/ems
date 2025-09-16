@@ -13,6 +13,7 @@ const Profile = React.lazy(()=> import('@/pages/admin/profile/Profile'));
 const Spinner = React.lazy(()=> import('@/components/spinner/Spinner'));
 import { Toaster } from '@/components/ui/sonner'
 const User = React.lazy(() => import('./pages/admin/users/User'));
+const Reports = React.lazy(() => import('./pages/admin/reports/Reports'));
 const Dashboard = React.lazy(()=> import('@/pages/dashboard/Dashboard'));
 function App() {
 
@@ -29,12 +30,13 @@ function App() {
             </Route>
             {/* User Route end here */}
             {/* Admin protected Route start here */}
-            <Route path="/admin" element={<PrivateAdminRoute />}> 
+            <Route path="/admin" element={<PrivateAdminRoute />}>
               <Route index element={<Navigate to="/admin/dashboard" />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<User />} />
               <Route path="settings" element={<Setting />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="reports" element={<Reports />} />
             </Route>
             {/* Admin Route end here */}
 

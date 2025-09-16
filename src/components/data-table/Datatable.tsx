@@ -12,16 +12,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import {motion} from 'framer-motion';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[],
+  newlyAddedUserId: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  newlyAddedUserId
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -50,20 +53,28 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="border">
+        <TableBody className="border bg-white">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row) => {
+              const isNew = row.original.id === newlyAddedUserId;
+              return(
+                <motion.tr
+                  key={row.id}
+                  layout
+                  initial={isNew ? { backgroundColor: "#EDE9FE", opacity: 0 } : false} // light violet
+                  animate={{ backgroundColor: "transparent", opacity: 1 }}
+                  transition={{ duration: 1 }}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="transition-colors border"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </motion.tr>
+              )
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
