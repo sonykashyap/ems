@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { Calendar, Home, Inbox, Search, Settings, CircleGauge, ChevronUp, User2 } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, CircleGauge, ChevronUp, User2, ClipboardMinus , UserPlus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "./ui/dropdown-menu";
 import { SidebarTrigger, SidebarHeader } from '@/components/ui/sidebar';
 import { useDispatch } from 'react-redux';
@@ -25,6 +25,12 @@ type SidebarLink = {
   active: boolean
 }
 
+type subLinks = {
+  title: string,
+  url: string,
+  icon: any
+}
+
 
 const items : SidebarLink[] = [
     {
@@ -37,6 +43,12 @@ const items : SidebarLink[] = [
       title: "Users",
       url: "/admin/users",
       icon: User2,
+      active: false,
+    },
+    {
+      title: "Reports",
+      url: "/admin/reports",
+      icon: ClipboardMinus,
       active: false,
     },
 ]
@@ -62,6 +74,7 @@ export const AppSidebar = () => {
                   <SidebarMenuItem key={item.title}>
                     <NavLink key={item.url} to={item.url}>
                       {({ isActive }) => (
+                        
                         <SidebarMenuButton
                           className={
                             `flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-violet-500 hover:text-white ${isActive

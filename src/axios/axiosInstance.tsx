@@ -18,5 +18,24 @@ axiosInstance.interceptors.request.use((config: AxiosRequestConfig)=>{
     return config;
 })
 
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      error.response.data?.code === "TOKEN_EXPIRED"
+    ) {
+      console.warn("Token expired, redirecting to login...");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 
 export default axiosInstance;

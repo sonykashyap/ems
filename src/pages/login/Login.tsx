@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import axiosInstance from "@/axios/axiosInstance";
-
+import {Eye, EyeOff} from 'lucide-react';
 
 type FormState = {
   email: string;
@@ -28,16 +28,15 @@ type FormState = {
 const Login = () =>{
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-    const [apiError, setAPIError] = useState(false);
     const [state, submitForm, isPending] = useActionState<FormState, FormData>(
     submitEmail,
     { email: '', error: undefined, password : '', passwordError: undefined }
   );
   
   async function submitEmail(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
+    prevState: FormState,
+    formData: FormData
+  ): Promise<FormState> {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
@@ -55,11 +54,14 @@ const Login = () =>{
     if(response.status == 200){
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.user.role);
-      navigate("/");
+      if(response.data.user.role === "admin"){
+        navigate("/admin");
+      }else{
+        navigate("/");
+      }
     }
     // await new Promise((resolve) => setTimeout(resolve, 1000));
   }catch(error : any){
-    console.log(error.response.data.message);
     if(error.response?.status == 404){
       toast(`${error.response.data.message}`, {
         classNames: {
@@ -115,7 +117,7 @@ const Login = () =>{
                         </div>
                         <div className='relative'>
                           <Input id="password" type={showPassword ? 'text' : 'password'} name='password' />
-                          <span className='text-xs absolute top-2 right-2 hover:cursor-pointer' onClick={()=> setShowPassword(!showPassword)}>{showPassword ? "Hide" : "Show"}</span>
+                          <span className='text-xs absolute top-2 right-2 hover:cursor-pointer'>{showPassword ? <Eye onClick={()=> setShowPassword(!showPassword)} /> : <EyeOff onClick={()=> setShowPassword(!showPassword)} />}</span>
                         </div>
                       
                         {state.passwordError && <p> {state.passwordError} </p>}
