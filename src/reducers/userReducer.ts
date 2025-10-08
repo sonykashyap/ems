@@ -65,6 +65,20 @@ export const addUser = createAsyncThunk(
 )
 
 
+export const editUser = createAsyncThunk(
+    "user/edit",
+    async (values, {rejectWithValues}) =>{
+        try{
+            console.log("Values to edit is ", values);
+            const response = await axiosInstance.patch(`/edit-user/${values.userId}`, values);
+            return response;
+        }catch(error){
+            console.log(error);
+        }
+    }
+)
+
+
 //Delete a user by Id
 export const deleteUserById = createAsyncThunk(
     "user/deleteUserByid",
@@ -120,6 +134,15 @@ const userReducer = createSlice({
         .addCase(addUser.rejected, (state, action)=>{
             console.log("Rejected state");
             state.loading = false;
+        })
+        .addCase(editUser.pending, (state,action)=>{
+            console.log("Pending state");
+        })
+         .addCase(editUser.fulfilled, (state,action)=>{
+            console.log("Fulfilled state");
+        })
+         .addCase(editUser.rejected, (state,action)=>{
+            console.log("Rejected state");
         })
     }
 });

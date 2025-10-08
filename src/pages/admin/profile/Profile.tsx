@@ -4,10 +4,8 @@ import AdminLayout from '@/layouts/AdminLayouts';
 const Profile = () => {
     return(
         <>
-        <AdminLayout>
-            <h1>User Profile</h1>
-        </AdminLayout>
-            
+            <h1>Admin Profile</h1>
+        
         </>
     )
 }

@@ -6,8 +6,9 @@ import AdminLayout from './layouts/AdminLayouts';
 // Example authentication check
 let url = "/login";
 const isAuthenticated = () => {
+  const userData = JSON.parse(localStorage.getItem('userData'));
   if(localStorage.getItem('token') !== null){
-    if(localStorage.getItem('role') === 'admin'){
+    if(userData?.role === 'admin'){
       url = ("/admin/login");
     }
     return true;

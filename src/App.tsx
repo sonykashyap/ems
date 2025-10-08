@@ -10,11 +10,14 @@ const AdminDashboard = React.lazy(()=> import('@/pages/admin/dashboard/Dashboard
 const AdminLogin =  React.lazy(()=> import('@/pages/admin/login/Login'));
 const PrivateAdminRoute = React.lazy(()=> import('@/PrivateRoute'));
 const Profile = React.lazy(()=> import('@/pages/admin/profile/Profile'));
+const UserProfile = React.lazy(()=> import('@/pages/profile/Profile'));
 const Spinner = React.lazy(()=> import('@/components/spinner/Spinner'));
 import { Toaster } from '@/components/ui/sonner'
 const User = React.lazy(() => import('./pages/admin/users/User'));
 const Reports = React.lazy(() => import('./pages/admin/reports/Reports'));
 const Dashboard = React.lazy(()=> import('@/pages/dashboard/Dashboard'));
+const Roles = React.lazy(() => import('./pages/admin/roles/Role'));
+
 function App() {
 
   return (
@@ -25,8 +28,9 @@ function App() {
           <Routes>
             {/* User protected Routes */}
             <Route path="/" element={<PrivateAdminRoute />} >
-              <Route index element={<Home />} />
-              <Route element={<Dashboard />} />
+              <Route element={<Home />} />
+              <Route index element={<Dashboard />} />
+              <Route path="profile" element={<UserProfile />} />
             </Route>
             {/* User Route end here */}
             {/* Admin protected Route start here */}
@@ -37,6 +41,7 @@ function App() {
               <Route path="settings" element={<Setting />} />
               <Route path="profile" element={<Profile />} />
               <Route path="reports" element={<Reports />} />
+              <Route path="roles" element={<Roles />} />
             </Route>
             {/* Admin Route end here */}
 

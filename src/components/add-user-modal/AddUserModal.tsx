@@ -14,32 +14,43 @@ import {toast} from 'sonner';
 type modalDialog = {
     isModalOpen: boolean,
     setIsModalOpen: Dispatch<SetStateAction<boolean>>,
-    addNewUser: Dispatch<SetStateAction<Object>>
+    addNewUser: Dispatch<SetStateAction<Object>>,
+    isEdit: boolean,
+    setIsEdit: Dispatch<SetStateAction<boolean>>,
+    editUserhandler: Dispatch<SetStateAction<Object>>,
+    userEditData: {}
 }
 
 const formSchema = z.object({
     name: z.string(),
     email: z.email(),
     role: z.string(),
+    userId: z.string().nullable().optional()
 });
-const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser}: modalDialog) => {
+const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEditData, setIsEdit, editUserhandler}: modalDialog) => {
     const dispatch = useDispatch();
+
+
     const handleModalOpen = () => {
         setIsModalOpen(false);
+        setIsEdit(false);
+        
     }
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            email: "",
-            role: ""
+            name: !isEdit ? "" : userEditData.name,
+            email: !isEdit ? "" : userEditData.email,
+            role: !isEdit ? "" : userEditData.roleId.name,
+            userId: !isEdit ? null : userEditData._id,
         },
     });
 
     
     const onSubmit =  (values: z.infer<typeof formSchema>) => {
-        addNewUser(values);
+        console.log("Values are ", values);
+        !isEdit ? addNewUser(values) : editUserhandler(values);
     }
 
     return(
@@ -69,11 +80,12 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser}: modalDialog) =>
                             )}
                         />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <FormField
                                     control={form.control}
                                     name="email"
+                                    disabled={isEdit ? true : false}
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="mt-2">Email</FormLabel>
@@ -119,7 +131,7 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser}: modalDialog) =>
                             <DialogClose asChild>
                                 <Button variant="outline" type="button" onClick={handleModalOpen}> Cancel </Button>
                             </DialogClose>
-                            <Button type="submit" className="bg-violet-500">Add</Button>
+                            <Button type="submit" className="bg-violet-500"> {isEdit ? "Update" : "Add User"} </Button>
                         </DialogFooter>
                         </form>
                     </DialogContent>

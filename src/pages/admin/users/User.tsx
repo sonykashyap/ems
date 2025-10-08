@@ -9,7 +9,7 @@ import AlertDialogComponent from '@/components/alert-dialog/AlertDialog';
 import {getAllUsers, LOGOUT} from '@/reducers/userReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import AddUserModal from '@/components/add-user-modal/AddUserModal';
-import { addUser } from '@/reducers/userReducer';
+import { addUser, editUser } from '@/reducers/userReducer';
 import {toast} from 'sonner';
 
 export type UsersData = {
@@ -30,6 +30,8 @@ const User = () =>{
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [lastAddedUserId, setLastAddedUserId] = useState<string | null>(null);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [userEditData, setUserEditData] = useState<object | null>({});
 
   const columns: ColumnDef<UsersData>[] = [
     {
@@ -66,14 +68,14 @@ const User = () =>{
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() =>  userAction(userData._id, "edit") }
+                onClick={() =>  userAction(userData._id, userData, "edit") }
               >
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 className="text-red-400 hover:text-red-400"
-                onClick={() => userAction(userData._id, "delete") }
+                onClick={() => userAction(userData._id, null, "delete") }
                 >
                 Delete
                 </DropdownMenuItem>
@@ -84,10 +86,16 @@ const User = () =>{
     },
   
   ]
-  const userAction = (id : string, action: string) => {
+  
+  const userAction = (id : string, user: object | null, action: string) => {
     setUserId(id);
     if(action === "delete"){
       setOpenDialog(true);
+    }else if(action == 'edit'){
+      console.log("User to edit is ", user.roleId.name);
+      setUserEditData(user);
+      setIsEdit(true);
+      setIsModalOpen(true);
     }
   }
 
@@ -95,7 +103,6 @@ const User = () =>{
 const addNewUser = (values) => {
   dispatch(addUser(values))
   .then((user)=>{
-    console.log("New User ID is", user.payload.data.user._id);
     toast(`User created successfully`, {
       classNames: {
         toast: "!bg-green-200",
@@ -114,6 +121,33 @@ const addNewUser = (values) => {
     });
     setIsModalOpen(false);
   })
+}
+
+const editUserhandler = (values) => {
+  dispatch(editUser(values))
+  .then(response=>{
+    setIsModalOpen(false);
+    if(response.payload.status === 200){
+      dispatch(getAllUsers());
+      toast(`User updated successfully`, {
+      classNames: {
+        toast: "!bg-green-200",
+        title: "font-bold !text-green-600",
+      }
+    });
+    }else{
+      toast(`Failed to update user`, {
+      classNames: {
+        toast: "!bg-red-200",
+        title: "font-bold !text-red-600",
+      },
+    });
+    }
+    
+  })
+  .catch(error=>{
+    console.log(error);
+  });
 }
 
 
@@ -135,9 +169,9 @@ const addNewUser = (values) => {
         <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
       </div>
         
-         <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
+        <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
         {openDialog && <AlertDialogComponent isOpen={openDialog} userId={userId} setOpenDialog={setOpenDialog} message="Are you sure, you want to delete this?" /> }
-        {isModalOpen && <AddUserModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} addNewUser={addNewUser} />  }
+        {isModalOpen && <AddUserModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} addNewUser={addNewUser} isEdit={isEdit} setIsEdit={setIsEdit} userEditData={userEditData} editUserhandler={editUserhandler} />  }
       </>
     )
 }
