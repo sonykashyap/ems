@@ -54,14 +54,23 @@ const Login = () =>{
     if(response.status == 200){
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.user.role);
-      if(response.data.user.role === "admin"){
-        navigate("/admin");
-      }else{
+      localStorage.setItem("userData", JSON.stringify(response.data.user));
+      // if(response.data.user.role === "admin"){
+        // navigate("/admin");
+      // }else{
         navigate("/");
-      }
+      // }
     }
     // await new Promise((resolve) => setTimeout(resolve, 1000));
   }catch(error : any){
+    if(error.message === "Network Error"){
+      return toast(`Cannot connect to the server. Please try again later.`, {
+        classNames: {
+          toast: "!bg-red-200",
+          title: "font-bold !text-red-600",
+        },
+      });
+    }
     if(error.response?.status == 404){
       toast(`${error.response.data.message}`, {
         classNames: {

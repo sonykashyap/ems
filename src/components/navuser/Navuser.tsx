@@ -13,6 +13,7 @@ import {
 import AvatarImg from '@/assets/images/avatar.webp';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { NavLink, Link } from 'react-router-dom';
 import {LOGOUT} from "@/reducers/userReducer"; 
 
 
@@ -20,33 +21,34 @@ const Navuser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isMobile } = useSidebar();
+    const userData =  JSON.parse(localStorage.getItem("userData"));
 
     const logout = () => {
-    dispatch(LOGOUT());
-    setTimeout(()=>{
-      navigate("/login");
-    }, 500);
-  }
+        dispatch(LOGOUT());
+        setTimeout(()=>{
+        navigate("/login");
+        }, 500);
+    }
 
     return(
         <>
             <SidebarMenu>
                 <SidebarMenuItem>
                     <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild className="group/main">
                         <SidebarMenuButton
                         size="lg"
                         className="data-[state=open]:bg-sidebar-accent group data-[state=open]:text-sidebar-accent-foreground"
                         >
                         <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage src={AvatarImg} alt="Sam" />
+                            <AvatarImage src={AvatarImg} alt="User profile image" />
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight group-hover:text-black text-white">
-                            <span className="truncate font-medium">Sam</span>
-                            <span className="truncate text-xs">sam@gmail.com</span>
+                            <span className="truncate font-medium group-hover/main:text-black group-hover:text-white group-data-[state=open]:text-black"> {userData?.name }<span className='text-xs text-yellow-300'> ({userData?.role}) </span> </span>
+                            <span className="truncate text-xs group-hover/main:text-black group-hover:text-white group-data-[state=open]:text-black"> {userData?.email} </span>
                         </div>
-                        <ChevronsUpDown className="ml-auto size-4 group-hover:text-black text-white" />
+                        <ChevronsUpDown className="ml-auto size-4 group-hover/main:text-black group-hover:text-white group-hover:text-black group-data-[state=open]:text-black text-white" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -62,31 +64,20 @@ const Navuser = () => {
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium">Sam</span>
-                            <span className="truncate text-xs">sam@gmail.com</span>
+                            <span className="truncate font-medium"> {userData?.name} </span>
+                            <span className="truncate text-xs"> {userData?.email} </span>
                             </div>
                         </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                         <DropdownMenuItem>
-                            <Sparkles />
-                            Upgrade to Pro
-                        </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                        <DropdownMenuItem>
                             <BadgeCheck />
-                            Account
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <CreditCard />
-                            Billing
+                                <Link to='/profile'>Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Bell />
-                            Notifications
+                             <Link to="/notifications">Notifications</Link>
                         </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

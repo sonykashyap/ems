@@ -18,7 +18,7 @@ import {motion} from 'framer-motion';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  newlyAddedUserId: string
+  newlyAddedUserId: string | null
 }
 
 export function DataTable<TData, TValue>({
