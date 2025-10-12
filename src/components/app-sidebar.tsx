@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarRail
 } from "@/components/ui/sidebar";
-import { CircleGauge, User2, ClipboardMinus , UserRoundCog } from "lucide-react";
+import { CircleGauge, User2, ClipboardMinus , UserRoundCog, Megaphone, CalendarCog, Siren, Ship, Bell } from "lucide-react";
 import { SidebarHeader } from '@/components/ui/sidebar';
 import { useDispatch } from 'react-redux';
 import {useNavigate} from 'react-router';
@@ -35,25 +35,43 @@ type subLinks = {
 const adminItems : SidebarLink[] = [
   {
     title: "Dashboard",
-    url: "/admin/dashboard",
+    url: "/dashboard",
     icon: CircleGauge,
     active: true,
   },
   {
     title: "Users",
-    url: "/admin/users",
+    url: "/users",
     icon: User2,
     active: false,
   },
   {
     title: "Roles",
-    url: "/admin/roles",
+    url: "/roles",
     icon: UserRoundCog,
     active: false,
   },
   {
+    title: "Policies",
+    url: "/policies",
+    icon: Siren,
+    active: false,
+  },
+  {
+    title: "Events",
+    url: "/events",
+    icon: CalendarCog,
+    active: false,
+  },
+  {
+    title: "Announcements",
+    url: "/announcements",
+    icon: Megaphone,
+    active: false,
+  },
+  {
     title: "Reports",
-    url: "/admin/reports",
+    url: "/reports",
     icon: ClipboardMinus,
     active: false,
   },
@@ -62,16 +80,29 @@ const adminItems : SidebarLink[] = [
 const userItems : SidebarLink[] = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: CircleGauge,
     active: true,
+  },
+  {
+    title: "Leaves",
+    url: "/leaves",
+    icon: Ship,
+    active: false,
+  },
+  {
+    title: "Notifications",
+    url: "/notifications",
+    icon: Bell,
+    active: false,
   },
   {
     title: "Reports",
     url: "/reports",
     icon: ClipboardMinus,
     active: false,
-  },
+  }
+  
 ]
 
 export const AppSidebar = () => {
@@ -89,7 +120,7 @@ export const AppSidebar = () => {
 
   
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="">
       <SidebarHeader>
         <div className="flex items-center justify-between">
           <span className="font-bold text-purple-700">EMS</span>

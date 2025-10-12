@@ -35,7 +35,7 @@ const Navuser = () => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild className="group/main">
                         <SidebarMenuButton
                         size="lg"
                         className="data-[state=open]:bg-sidebar-accent group data-[state=open]:text-sidebar-accent-foreground"
@@ -45,10 +45,10 @@ const Navuser = () => {
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight group-hover:text-black text-white">
-                            <span className="truncate font-medium group-data-[state=open]:text-black"> {userData?.name} </span>
-                            <span className="truncate text-xs group-data-[state=open]:text-black"> {userData?.email} </span>
+                            <span className="truncate font-medium group-hover/main:text-black group-hover:text-white group-data-[state=open]:text-black"> {userData?.name }<span className='text-xs text-yellow-300'> ({userData?.role}) </span> </span>
+                            <span className="truncate text-xs group-hover/main:text-black group-hover:text-white group-data-[state=open]:text-black"> {userData?.email} </span>
                         </div>
-                        <ChevronsUpDown className="ml-auto size-4 group-hover:text-black group-data-[state=open]:text-black text-white" />
+                        <ChevronsUpDown className="ml-auto size-4 group-hover/main:text-black group-hover:text-white group-hover:text-black group-data-[state=open]:text-black text-white" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -73,7 +73,7 @@ const Navuser = () => {
                         <DropdownMenuGroup>
                         <DropdownMenuItem>
                             <BadgeCheck />
-                                <Link to={userData.role === "admin" ? '/admin/profile' : '/profile'}>Profile</Link> 
+                                <Link to='/profile'>Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Bell />
