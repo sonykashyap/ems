@@ -99,7 +99,7 @@ const Login = () =>{
                 <CardHeader>
                   <CardTitle>Login to your account</CardTitle>
                   <CardAction>
-                    <Button variant="link" onClick={()=> navigate('/signup')}>Sign Up</Button>
+                    <Button type="button" variant="link" onClick={()=> navigate('/signup')}>Sign Up</Button>
                   </CardAction>
                 </CardHeader>
                 <CardContent>
@@ -110,9 +110,8 @@ const Login = () =>{
                           id="email"
                           type="email"
                           name='email'
-                          placeholder="abc@example.com"
                         />
-                        {state.error && <p> {state.error} </p> }
+                        {state.error && <p className='text-red-500'> {state.error} </p> }
                       </div>
                       <div className="grid gap-2">
                         <div className="flex items-center">
@@ -125,8 +124,13 @@ const Login = () =>{
                             </a>
                         </div>
                         <div className='relative'>
-                          <Input id="password" type={showPassword ? 'text' : 'password'} name='password' />
-                          <span className='text-xs absolute top-2 right-2 hover:cursor-pointer'>{showPassword ? <Eye onClick={()=> setShowPassword(!showPassword)} /> : <EyeOff onClick={()=> setShowPassword(!showPassword)} />}</span>
+                          <Input tabIndex={0} id="password" type={showPassword ? 'text' : 'password'} name='password' />
+                          <span className='text-xs absolute top-2 right-2 hover:cursor-pointer'>
+                            {showPassword ? 
+                              <Eye onClick={()=> setShowPassword(!showPassword)} /> : 
+                              <EyeOff onClick={()=> setShowPassword(!showPassword)} />
+                            }
+                          </span>
                         </div>
                       
                         {state.passwordError && <p> {state.passwordError} </p>}

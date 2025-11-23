@@ -18,6 +18,7 @@ const Events = React.lazy(() => import('./pages/events/Event'));
 const Announcements = React.lazy(() => import('./pages/announcements/Announcement'));
 const Leaves = React.lazy(() => import('./pages/leaves/Leave'));
 const Notifications = React.lazy(() => import('./pages/notifications/Notification'));
+const Policies = React.lazy(() => import('./pages/policies/Policy'));
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
               <Route path="/announcements" element={<Announcements />} />
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/policies" element={<Policies />} />
               {/* <Route element={<Home />} /> */}
               {/* <Route path="profile" element={<UserProfile />} /> */}
             {/* </Route> */}

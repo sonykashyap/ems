@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from '@/components/data-table/Datatable';
 import { UserRoundCog } from "lucide-react";
+import { useDispatch } from 'react-redux';
+import { addRole, getAllRoles } from '@/reducers/roleReducer';
 
 export type RoleData = {
   id: string
@@ -12,7 +14,7 @@ export type RoleData = {
 }
 
 const Role = () => {
-
+    const dispatch = useDispatch();
     const columns: ColumnDef<RoleData>[] = [
     {
       accessorKey: "role",
@@ -59,11 +61,19 @@ const Role = () => {
       {id: "dsvdsvdfvdfvdvdvdvd", role: "Employee"},
     ]
 
+    const addRolehandler = () => {
+      dispatch(addRole());
+    }
+
+    useEffect(()=>{
+      dispatch(getAllRoles());
+    },[]);
+
     return(
         <>
             <div className='flex justify-between mb-2'>
                 <h1 className='text-violet-500 text-2xl'>Users</h1>
-                <Button> <UserRoundCog /> Add</Button>
+                <Button onClick={addRolehandler}> <UserRoundCog /> Add</Button>
             </div>
             <DataTable columns={columns} data={data} />
         </>
