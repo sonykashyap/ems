@@ -71,7 +71,7 @@ const Signup = () =>{
                     <CardTitle>Signup</CardTitle>
                     
                     <CardAction>
-                        <Button variant="link" onClick={()=> navigate('/login')}>Login</Button>
+                        <Button type="button" variant="link" onClick={()=> navigate('/login')}>Login</Button>
                     </CardAction>
                 </CardHeader>
                 <CardContent>

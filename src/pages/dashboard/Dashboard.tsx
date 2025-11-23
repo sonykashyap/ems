@@ -15,7 +15,7 @@ const Dashboard = () => {
     ]);
 
     useEffect(()=>{
-        console.log("Dashboard Compoenent called");
+        console.log("Dashboard Component called");
     },[]);
     
     return(

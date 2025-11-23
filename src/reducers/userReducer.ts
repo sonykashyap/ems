@@ -1,5 +1,5 @@
 import axiosInstance from '@/axios/axiosInstance';
-import {createAsyncThunk, createSlice , PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface UserState {
   users: string[],
@@ -106,6 +106,7 @@ const userReducer = createSlice({
     extraReducers:(builder)=>{
         builder
         .addCase(getAllUsers.fulfilled, (state, action: ReturnType<typeof getAllUsers.fulfilled>)=>{
+            console.log("All users are ", action.payload);
             state.users = action.payload;
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{

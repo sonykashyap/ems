@@ -42,6 +42,16 @@ const User = () =>{
       accessorKey: "email",
       header: "Email",
     },
+     {
+      accessorKey: "roleId",
+      header: "Role",
+      cell: ({row})=>{
+        const Role = row.original
+        return (
+          <span> {Role.roleId.name} </span>
+        )
+      }
+    },
     {
       accessorKey: "status",
       header: "Status",
