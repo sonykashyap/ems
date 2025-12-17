@@ -18,32 +18,39 @@ type alertDialog = {
     message: string,
     isOpen: Boolean,
     setOpenDialog: Dispatch<SetStateAction<boolean>>,
-    userId: string | null
+    id: string | null,
+    deleteMethod: Dispatch<SetStateAction<void>>,
 }
 
-const AlertDialogComponent = ({message, isOpen, setOpenDialog, userId }: alertDialog) => {
+const AlertDialogComponent = ({message, isOpen, setOpenDialog, id, deleteMethod }: alertDialog) => {
     const dispatch = useDispatch();
 
 
-    const deleteUser = () => {
-        
-        dispatch(deleteUserById(userId))
-        .then(status =>{
-            if(status.payload.status === 200){
-                toast('User Deleted Successfuly', {
-                    classNames: {
-                        toast: "!bg-green-100",
-                        title: "!text-green-500"
-                    }
-                });
-                dispatch(getAllUsers());
-                setOpenDialog(false);
-            }
-        })
-        .catch(error=>{
-            console.log(error);
-        });
+    const deleteHandler = () => {
+        console.log("Delete method called");
+        deleteMethod();
     }
+
+
+    // const deleteUser = () => {
+        
+    //     dispatch(deleteUserById(id))
+    //     .then(status =>{
+    //         if(status.payload.status === 200){
+    //             toast('User Deleted Successfully', {
+    //                 classNames: {
+    //                     toast: "!bg-green-100",
+    //                     title: "!text-green-500"
+    //                 }
+    //             });
+    //             dispatch(getAllUsers());
+    //             setOpenDialog(false);
+    //         }
+    //     })
+    //     .catch(error=>{
+    //         console.log(error);
+    //     });
+    // }
 
     return(
         <>
@@ -57,7 +64,7 @@ const AlertDialogComponent = ({message, isOpen, setOpenDialog, userId }: alertDi
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel onClick={() => setOpenDialog(false)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={deleteUser}>Delete</AlertDialogAction>
+                        <AlertDialogAction onClick={deleteHandler}>Delete</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

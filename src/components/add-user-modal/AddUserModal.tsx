@@ -8,7 +8,6 @@ import {useForm} from 'react-hook-form';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 import { useDispatch } from 'react-redux';
-import {toast} from 'sonner';
 
 
 type modalDialog = {
@@ -61,7 +60,7 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEdit
                     <DialogContent className="max-w-full md:max-w-[800px]">
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                         <DialogHeader>
-                            <DialogTitle>Add User</DialogTitle>
+                            <DialogTitle></DialogTitle>
                             <DialogDescription></DialogDescription>
                         </DialogHeader>
                         <div className="grid grid-cols-1">
