@@ -2,11 +2,13 @@ import {configureStore} from '@reduxjs/toolkit';
 import reducer from '@/reducers';
 
 
-const store = configureStore({
+export const store = configureStore({
   reducer,
   middleware: (getDefaultMiddleware : any)=> getDefaultMiddleware({
     serializableCheck: false
   })
-})
+});
 
-export default store;
+// export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

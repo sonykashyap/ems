@@ -6,20 +6,28 @@ interface UserState {
   loading: boolean,
   isAuthenticated: boolean,
   isCreated: boolean,
-  error: {
-    message: string;
-    code?: string;
-    status?: number;
-  } | null;
-}
+    toast: {
+        message: string | null;
+        type: "success" | "error" | null;
+    }
+        error: {
+        message: string;
+        code?: string;
+        status?: number;
+    } | null;
 
+}
 
 const initialState : UserState = {
     users: [],
     loading: false,
     error: null,
     isAuthenticated: false,
-    isCreated : false
+    isCreated : false,
+    toast: {
+        message: null,
+        type: null,
+    },
 }
 
 //Get all users
@@ -48,13 +56,10 @@ export const addUser = createAsyncThunk(
     "users/addUser",
     async (values, { rejectWithValues, dispatch}) =>{
         try{
-            console.log("Data is ", values);
             const jsonData = JSON.stringify(values);
-            const bytes = new Blob([jsonData]).size;
-            console.log("Data is ", values);
-            console.log("Data in KB is  ", (bytes/1024).toFixed(2));
+            // const bytes = new Blob([jsonData]).size;
+            // console.log("Data in KB is  ", (bytes/1024).toFixed(2));
             const response = await axiosInstance.post("/add-user", jsonData);
-            console.log("Response from added new user is ", response);
             dispatch(getAllUsers());
             return response;
         }catch(error){
@@ -101,7 +106,11 @@ const userReducer = createSlice({
         LOGOUT(state, action){
             localStorage.removeItem("token");
             localStorage.removeItem("role");
-        }
+        },
+        clearToast: (state) => {
+            state.toast.message = null;
+            state.toast.type = null;
+        },
     },
     extraReducers:(builder)=>{
         builder
@@ -121,9 +130,17 @@ const userReducer = createSlice({
         })
         .addCase(deleteUserById.fulfilled, (state, action)=>{
             state.loading = false;
+            state.toast = {
+                message: "User Deleted Successfully",
+                type: "success"
+            }
         })
         .addCase(deleteUserById.rejected, (state, action)=>{
             state.loading = false;
+            state.toast = {
+                message: "Failed delete user",
+                type: "error"
+            }
         })
         .addCase(addUser.pending, (state, action)=>{
             console.log("Pending state");
@@ -131,10 +148,17 @@ const userReducer = createSlice({
         })
         .addCase(addUser.fulfilled, (state, action)=>{
             state.loading = false;
+            state.toast = {
+                message: "User Created Successfully",
+                type: "success"
+            }
         })
         .addCase(addUser.rejected, (state, action)=>{
-            console.log("Rejected state");
             state.loading = false;
+            state.toast = {
+                message: "Failed to create new user",
+                type: "error"
+            }
         })
         .addCase(editUser.pending, (state,action)=>{
             console.log("Pending state");
@@ -148,5 +172,5 @@ const userReducer = createSlice({
     }
 });
 
-export const {LOGOUT} = userReducer.actions;
+export const {LOGOUT, clearToast} = userReducer.actions;
 export default userReducer.reducer;

@@ -18,7 +18,7 @@ import {motion} from 'framer-motion';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  newlyAddedUserId: string | null
+  newlyAddedUserId?: string | null
 }
 
 export function DataTable<TData, TValue>({
@@ -61,9 +61,9 @@ export function DataTable<TData, TValue>({
                 <motion.tr
                   key={row.id}
                   layout
-                  initial={isNew ? { backgroundColor: "#EDE9FE", opacity: 0 } : false} // light violet
-                  animate={{ backgroundColor: "transparent", opacity: 1 }}
-                  transition={{ duration: 1 }}
+                  initial={isNew ? { backgroundColor: "lavender", opacity: 1 } : false} // light violet
+                  animate={{ backgroundColor: "white" }}
+                  transition={{ duration: 2 }}
                   data-state={row.getIsSelected() && "selected"}
                   className="transition-colors border"
                 >

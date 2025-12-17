@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from '@/components/data-table/Datatable';
@@ -6,11 +6,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, UserPlus } from "lucide-react";
 import AlertDialogComponent from '@/components/alert-dialog/AlertDialog';
-import {getAllUsers, LOGOUT} from '@/reducers/userReducer';
-import { useDispatch, useSelector } from 'react-redux';
+import {clearToast, deleteUserById, getAllUsers, LOGOUT} from '@/reducers/userReducer';
 import AddUserModal from '@/components/add-user-modal/AddUserModal';
 import { addUser, editUser } from '@/reducers/userReducer';
 import {toast} from 'sonner';
+import ContextMenu from '@/components/context-menu/ContextMenu';
+import { RootState } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
 export type UsersData = {
   id: string
@@ -22,13 +24,14 @@ export type UsersData = {
 
 const User = () =>{
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const data = useSelector((state) => state.userReducer.users);
-  const error = useSelector((state)=> state.userReducer.error);
+  const data = useAppSelector((state: RootState) => state.userReducer.users);
+  const error = useAppSelector((state: RootState)=> state.userReducer.error);
+  const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
   const [openDialog, setOpenDialog] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [id, setId] = useState<string | null>(null);
   const [lastAddedUserId, setLastAddedUserId] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [userEditData, setUserEditData] = useState<object | null>({});
@@ -69,68 +72,46 @@ const User = () =>{
         const userData = row.original
   
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>  userAction(userData._id, userData, "edit") }
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                className="text-red-400 hover:text-red-400"
-                onClick={() => userAction(userData._id, null, "delete") }
-                >
-                Delete
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ContextMenu action={userAction} data={userData} />
         )
       },
     },
   
   ]
   
-  const userAction = (id : string, user: object | null, action: string) => {
-    setUserId(id);
+  const userAction = (id : string, data: object | null, action: string) => {
+    setId(id);
     if(action === "delete"){
       setOpenDialog(true);
     }else if(action == 'edit'){
-      console.log("User to edit is ", user.roleId.name);
-      setUserEditData(user);
+      console.log("User to edit is ", data.name);
+      setUserEditData(data);
       setIsEdit(true);
       setIsModalOpen(true);
     }
   }
 
-
 const addNewUser = (values) => {
-  dispatch(addUser(values))
-  .then((user)=>{
-    toast(`User created successfully`, {
-      classNames: {
-        toast: "!bg-green-200",
-        title: "font-bold !text-green-600",
-      },
-    });
-    setLastAddedUserId(user.payload.data.user._id);
+  try{
+    dispatch(addUser(values)).unwrap();
+    // toast(`User created successfully`, {
+    //   classNames: {
+    //     toast: "!bg-green-200",
+    //     title: "font-bold !text-green-600",
+    //   },
+    // });
+    // setLastAddedUserId(user.payload.data.user._id);
     setIsModalOpen(false);
-  })
-  .catch(error=>{
-    toast(`Failed to add user`, {
-      classNames: {
-        toast: "!bg-red-200",
-        title: "font-bold !text-red-600",
-      },
-    });
-    setIsModalOpen(false);
-  })
+  }catch(error){
+    console.log(error);
+    // toast(`Failed to add user`, {
+    //   classNames: {
+    //     toast: "!bg-red-200",
+    //     title: "font-bold !text-red-600",
+    //   },
+    // });
+  }
+   setIsModalOpen(false);
 }
 
 const editUserhandler = (values) => {
@@ -160,6 +141,44 @@ const editUserhandler = (values) => {
   });
 }
 
+  const deleteRoleHandler = async () => {
+    try{
+      await dispatch(deleteUserById(id)).unwrap();
+      // toast('Role Deleted Successfully', {
+      //   classNames: {
+      //     toast: "!bg-green-100",
+      //     title: "!text-green-500"
+      //   }
+      // });
+      dispatch(getAllUsers());
+    }catch(error){
+      // toast('Failed to delete role', {
+      //   classNames: {
+      //     toast: "!bg-red-200",
+      //     title: "font-bold !text-red-600",
+      //   }
+      // });
+    }
+    setOpenDialog(false);
+  }
+
+  useEffect(() => {
+    if (!toastState.message) return;
+  
+    toast(toastState.message, {
+      classNames: {
+        toast:
+          toastState.type === "success"
+          ? "!bg-green-200"
+          : "!bg-red-200",
+        title:
+          toastState.type === "success"
+          ? "!text-green-600 font-bold"
+          : "!text-red-600 font-bold",
+      },
+    });
+    dispatch(clearToast());
+  }, [toastState]);
 
   useEffect(()=>{
     dispatch(getAllUsers());
@@ -180,8 +199,21 @@ const editUserhandler = (values) => {
       </div>
         
         <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
-        {openDialog && <AlertDialogComponent isOpen={openDialog} userId={userId} setOpenDialog={setOpenDialog} message="Are you sure, you want to delete this?" /> }
-        {isModalOpen && <AddUserModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} addNewUser={addNewUser} isEdit={isEdit} setIsEdit={setIsEdit} userEditData={userEditData} editUserhandler={editUserhandler} />  }
+        {openDialog && <AlertDialogComponent 
+          isOpen={openDialog} 
+          id={id} 
+          setOpenDialog={setOpenDialog} 
+          deleteMethod={deleteRoleHandler}
+          message="Are you sure, you want to delete this?" /> }
+
+        {isModalOpen && <AddUserModal 
+          isModalOpen={isModalOpen} 
+          setIsModalOpen={setIsModalOpen} 
+          addNewUser={addNewUser} 
+          isEdit={isEdit} 
+          setIsEdit={setIsEdit} 
+          userEditData={userEditData} 
+          editUserhandler={editUserhandler} />  }
       </>
     )
 }
