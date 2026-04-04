@@ -77,20 +77,27 @@ const Signup = () =>{
                 <CardContent>
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
+                        {/* <Label htmlFor="email">Email</Label> */}
                         <Input
                             id="email"
                             type="email"
                             name='email'
-                            placeholder="m@example.com"
+                            placeholder="Email"
+                            className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
                         
                         />
                         </div>
                         <div className="grid gap-2">
                         <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
+                            {/* <Label htmlFor="password">Password</Label> */}
                         </div>
-                        <Input id="password" type="password" name='password' />
+                        <Input 
+                          id="password" 
+                          type="password" 
+                          name='password' 
+                          placeholder='Password'
+                          className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'  
+                        />
                         {/* {state.error && <p> {state.error} </p>} */}
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 import axiosInstance from '@/axios/axiosInstance';
 import {createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import ENDPOINTS from '@/config/api.js';
 
 interface UserState {
   users: string[],
@@ -35,7 +36,7 @@ export const getAllUsers = createAsyncThunk(
     "auth/getAllUsers",
     async (_,{rejectWithValue}) => {
         try{
-            const users = await axiosInstance.get("/users");
+            const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list());
             return users.data.data;
         }catch(error){
             if(error.response.data.message === "Token expired"){
@@ -46,7 +47,6 @@ export const getAllUsers = createAsyncThunk(
                 });
             }
         }
-        
     }
 )
 
@@ -59,8 +59,8 @@ export const addUser = createAsyncThunk(
             const jsonData = JSON.stringify(values);
             // const bytes = new Blob([jsonData]).size;
             // console.log("Data in KB is  ", (bytes/1024).toFixed(2));
-            const response = await axiosInstance.post("/add-user", jsonData);
-            dispatch(getAllUsers());
+            const response = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.create(), jsonData);
+            // dispatch(getAllUsers());
             return response;
         }catch(error){
             console.log("error:", error);
@@ -75,7 +75,7 @@ export const editUser = createAsyncThunk(
     async (values, {rejectWithValues}) =>{
         try{
             console.log("Values to edit is ", values);
-            const response = await axiosInstance.patch(`/edit-user/${values.userId}`, values);
+            const response = await axiosInstance.patch(ENDPOINTS.ENDPOINTS.users.edit(values.userId), values);
             return response;
         }catch(error){
             console.log(error);
@@ -90,7 +90,7 @@ export const deleteUserById = createAsyncThunk(
     async (userId : string)=>{
         try{
             console.log("Id to delete is ", userId);
-            const response = await axiosInstance.delete(`/user/${userId}`);
+            const response = await axiosInstance.delete(ENDPOINTS.ENDPOINTS.users.delete(userId));
             return response;
         }catch(error){
             console.log("error while deleting user is ", error);
@@ -98,6 +98,32 @@ export const deleteUserById = createAsyncThunk(
     }
 )
 
+// Forgot password
+export const forgotPassword = createAsyncThunk(
+    'user/forgotPassword',
+    async (payload) => {
+        try{
+            console.log("Payload is ", payload);
+            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.forgotPassword(), payload);
+            return result;
+        }catch(error){
+            console.log("error: ", error);
+        }
+    }
+);
+
+// Reset password
+export const resetPassword = createAsyncThunk(
+    'user/resetPassword',
+    async () => {
+        try{
+            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.resetPassword())
+            console.log("Result is ", result);
+        }catch(error){
+            console.log("error: ", error);
+        }
+    }
+)
 
 const userReducer = createSlice({
     name: "userReducer",
@@ -111,14 +137,20 @@ const userReducer = createSlice({
             state.toast.message = null;
             state.toast.type = null;
         },
+        resetUserState: () => initialState,
     },
     extraReducers:(builder)=>{
         builder
+        .addCase(getAllUsers.pending, (state, action: ReturnType<typeof getAllUsers.pending>)=>{
+            state.loading = true;
+            state.users = action.payload;
+        })
         .addCase(getAllUsers.fulfilled, (state, action: ReturnType<typeof getAllUsers.fulfilled>)=>{
-            console.log("All users are ", action.payload);
+            state.loading = false;
             state.users = action.payload;
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{
+            state.loading = false;
             state.error = action.payload;
             if(action.payload?.code == "TOKEN_EXPIRED"){
                 localStorage.removeItem('token');
@@ -169,8 +201,20 @@ const userReducer = createSlice({
          .addCase(editUser.rejected, (state,action)=>{
             console.log("Rejected state");
         })
+        .addCase(forgotPassword.fulfilled, (state,action)=>{
+            state.toast = {
+                message: "Email sent successfully. Please check your email",
+                type: "success"
+            }
+        })
+        .addCase(forgotPassword.rejected, (state,action)=>{
+            state.toast = {
+                message: "Something went wrong. Please try after some time",
+                type: "success"
+            }
+        })
     }
 });
 
-export const {LOGOUT, clearToast} = userReducer.actions;
+export const {LOGOUT, clearToast, resetUserState} = userReducer.actions;
 export default userReducer.reducer;

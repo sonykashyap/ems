@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -14,17 +14,22 @@ import AvatarImg from '@/assets/images/avatar.webp';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { NavLink, Link } from 'react-router-dom';
-import {LOGOUT} from "@/reducers/userReducer"; 
+import {LOGOUT, resetUserState} from "@/reducers/userReducer"; 
+import { resetRolesState } from '@/reducers/roleReducer';
+import { useAppSelector } from '@/hooks';
 
 
 const Navuser = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isMobile } = useSidebar();
-    const userData =  JSON.parse(localStorage.getItem("userData"));
+    const userData =  JSON.parse(localStorage.getItem("userData") ?? "");
+    const roles = useAppSelector(state=> state.roleReducer.roles);
 
     const logout = () => {
         dispatch(LOGOUT());
+        dispatch(resetRolesState());
+        dispatch(resetUserState());
         setTimeout(()=>{
         navigate("/login");
         }, 500);
@@ -73,7 +78,7 @@ const Navuser = () => {
                         <DropdownMenuGroup>
                         <DropdownMenuItem>
                             <BadgeCheck />
-                                <Link to='/profile'>Profile</Link>
+                                <Link to='/users/profile'>Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Bell />

@@ -1,10 +1,15 @@
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import React, { useEffect, useState } from 'react';
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from '@/components/data-table/Datatable';
 import { UserRoundCog } from "lucide-react";
-import { addRole, deleteRole, editRole, getAllRoles, clearToast } from '@/reducers/roleReducer';
+import { 
+  addRole, 
+  deleteRole, 
+  editRole, 
+  getAllRoles, 
+  clearToast, 
+  clearAllStates } from '@/reducers/roleReducer';
 import ModalDialog from '@/components/modal-dialog/ModalDialog';
 import {z} from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
@@ -36,12 +41,11 @@ const Role = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const roles = useAppSelector((state:RootState) => state.roleReducer.roles);
   const toastState = useAppSelector((state) => state.roleReducer.toast);
-  const spinner = useAppSelector((state) => state.roleReducer.loader);
+  const isLoading = useAppSelector((state) => state.roleReducer.loading);
   const [openDialog, setOpenDialog] = useState(false);
   const [roleData, setRoleEditData] = useState<object | null>({});
   const [id, setId] = useState<string | null>(null);
   const [isEdit,setIsEdit] = useState<boolean>(false);
-  // const [editData, setEditData] = useState<Object | null>(null);
   
   const columns: ColumnDef<RoleData>[] = [
     {
@@ -75,18 +79,24 @@ const Role = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try{
-      !isEdit ? await dispatch(addRole(values.role)).unwrap() : await dispatch(editRole(values)).unwrap();
+      !isEdit ? 
+      await dispatch(addRole(values.role)).unwrap() : 
+      await dispatch(editRole(values)).unwrap();
       setIsModalOpen(false);
       dispatch(getAllRoles());
       if(isEdit){
         setIsEdit(false);
       }
     }catch(error){
-      
+      console.log(error);
     }
+    resetFormValue();
+  }
+  
+  const resetFormValue = () => { // empty form value upon cancel or submission of form
     form.reset({
       role: ""
-    })
+    });
   }
 
   const addRoleHandler = () => {
@@ -109,21 +119,11 @@ const Role = () => {
 
   const deleteRoleHandler = async () => {
     try{
+
       await dispatch(deleteRole(id)).unwrap();
-      toast('Role Deleted Successfully', {
-        classNames: {
-          toast: "!bg-green-100",
-          title: "!text-green-500"
-        }
-      });
       dispatch(getAllRoles());
     }catch(error){
-      toast('Failed to delete role', {
-        classNames: {
-          toast: "!bg-red-200",
-          title: "font-bold !text-red-600",
-        }
-      });
+      console.log(error);
     }
     setOpenDialog(false);
   }
@@ -149,6 +149,7 @@ const Role = () => {
   useEffect(()=>{
     dispatch(getAllRoles());
   
+    //Cleanup code goes here
     return () => {
       console.log("Cleanup goes here...")
     };
@@ -162,7 +163,7 @@ const Role = () => {
       </div>
       {
       isModalOpen && 
-      <ModalDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} >
+      <ModalDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
         <Form {...form}>
                     
           <DialogContent className="max-w-full md:max-w-[500px]">
@@ -189,7 +190,7 @@ const Role = () => {
               
               <DialogFooter className='mt-4'>
                   <DialogClose asChild>
-                      <Button variant="outline" type="button" > Cancel </Button>
+                      <Button variant="outline" type="button" onClick={resetFormValue}> Cancel </Button>
                   </DialogClose>
                   <Button type="submit" className="bg-violet-500"> { !isEdit ? "Add" : "Update" } </Button>
               </DialogFooter>
