@@ -13,6 +13,7 @@ import {toast} from 'sonner';
 import ContextMenu from '@/components/context-menu/ContextMenu';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/hooks';
+import {LoaderCircle} from 'lucide-react';
 
 export type UsersData = {
   id: string
@@ -28,6 +29,7 @@ const User = () =>{
   const navigate = useNavigate();
   const data = useAppSelector((state: RootState) => state.userReducer.users);
   const error = useAppSelector((state: RootState)=> state.userReducer.error);
+  const isLoading = useAppSelector((state: RootState)=> state.userReducer.loading);
   const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
   const [openDialog, setOpenDialog] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,7 +47,7 @@ const User = () =>{
       accessorKey: "email",
       header: "Email",
     },
-     {
+    {
       accessorKey: "roleId",
       header: "Role",
       cell: ({row})=>{
@@ -61,7 +63,10 @@ const User = () =>{
       cell:  ({row}) => {
         const status = "Active" as string
         return (
-          <span className={`text-white p-1 text-sm rounded-sm ${status === "Active" ? "bg-violet-400" : "bg-red-400"} `}> Active </span>
+          <span 
+            className={`text-white p-1 text-sm rounded-sm 
+            ${status === "Active" ? "bg-violet-400" : "bg-red-400"} 
+          `}> Active </span>
         )
       }
     },
@@ -91,25 +96,16 @@ const User = () =>{
     }
   }
 
-const addNewUser = (values) => {
+const addNewUser = async (values) => {
   try{
-    dispatch(addUser(values)).unwrap();
-    // toast(`User created successfully`, {
-    //   classNames: {
-    //     toast: "!bg-green-200",
-    //     title: "font-bold !text-green-600",
-    //   },
-    // });
-    // setLastAddedUserId(user.payload.data.user._id);
+
+    await dispatch(addUser(values)).unwrap();
+    dispatch(getAllUsers());
     setIsModalOpen(false);
+
   }catch(error){
+
     console.log(error);
-    // toast(`Failed to add user`, {
-    //   classNames: {
-    //     toast: "!bg-red-200",
-    //     title: "font-bold !text-red-600",
-    //   },
-    // });
   }
    setIsModalOpen(false);
 }
@@ -121,18 +117,18 @@ const editUserhandler = (values) => {
     if(response.payload.status === 200){
       dispatch(getAllUsers());
       toast(`User updated successfully`, {
-      classNames: {
-        toast: "!bg-green-200",
-        title: "font-bold !text-green-600",
-      }
-    });
+        classNames: {
+          toast: "!bg-green-200",
+          title: "font-bold !text-green-600",
+        }
+      });
     }else{
       toast(`Failed to update user`, {
-      classNames: {
-        toast: "!bg-red-200",
-        title: "font-bold !text-red-600",
-      },
-    });
+        classNames: {
+          toast: "!bg-red-200",
+          title: "font-bold !text-red-600",
+        },
+      });
     }
     
   })
@@ -144,20 +140,9 @@ const editUserhandler = (values) => {
   const deleteRoleHandler = async () => {
     try{
       await dispatch(deleteUserById(id)).unwrap();
-      // toast('Role Deleted Successfully', {
-      //   classNames: {
-      //     toast: "!bg-green-100",
-      //     title: "!text-green-500"
-      //   }
-      // });
       dispatch(getAllUsers());
     }catch(error){
-      // toast('Failed to delete role', {
-      //   classNames: {
-      //     toast: "!bg-red-200",
-      //     title: "font-bold !text-red-600",
-      //   }
-      // });
+      console.log(error);
     }
     setOpenDialog(false);
   }
@@ -193,12 +178,15 @@ const editUserhandler = (values) => {
 
     return(
       <>
-      <div className='flex justify-between mb-2'>
-        <h1 className='text-violet-500 text-2xl'>Users</h1>
-        <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
-      </div>
-        
-        <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
+        <div className='flex justify-between mb-2'>
+          <h1 className='text-violet-500 text-2xl'>Users</h1>
+          <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
+        </div>
+        {
+          isLoading ?
+          <LoaderCircle /> :
+          <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
+        }
         {openDialog && <AlertDialogComponent 
           isOpen={openDialog} 
           id={id} 

@@ -8,12 +8,22 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail
+  SidebarRail,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton
 } from "@/components/ui/sidebar";
-import { CircleGauge, User2, ClipboardMinus , UserRoundCog, Megaphone, CalendarCog, Siren, Ship, Bell } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import { 
+  CircleGauge, User2, ClipboardMinus , 
+  UserRoundCog, Megaphone, CalendarCog, 
+  Siren, Ship, Bell } from "lucide-react";
 import { SidebarHeader } from '@/components/ui/sidebar';
-import { useDispatch } from 'react-redux';
-import {useNavigate} from 'react-router';
+// import { useDispatch } from 'react-redux';
+// import {useNavigate} from 'react-router';
 import { NavLink } from 'react-router-dom';
 import Navuser from "@/components/navuser/Navuser";
 import { useEffect, useState } from "react";
@@ -22,7 +32,11 @@ type SidebarLink = {
   title: string,
   url: string,
   icon: any,
-  active: boolean
+  active: boolean,
+  items?: {
+      title: string
+      url: string
+    }[]
 }
 
 type subLinks = {
@@ -44,6 +58,13 @@ const adminItems : SidebarLink[] = [
     url: "/users",
     icon: User2,
     active: false,
+    items: [
+        {
+          title: "Profile",
+          url: "/users/profile",
+        },
+       
+      ],
   },
   {
     title: "Roles",
@@ -106,9 +127,9 @@ const userItems : SidebarLink[] = [
 ]
 
 export const AppSidebar = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const userRole = localStorage.getItem("role");
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const userRole = localStorage.getItem("role");
   const [items, setItems] = useState<SidebarLink[]>([]);
 
 
@@ -131,25 +152,41 @@ export const AppSidebar = () => {
             <SidebarGroupContent>
                 <SidebarMenu>
                   {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <NavLink key={item.url} to={item.url}>
-                      {({ isActive }) => (
-                        
-                        <SidebarMenuButton
-                          tooltip={item.title}
-                          className={
-                            `flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-violet-500 hover:text-white ${isActive
-                              ? 'bg-violet-500 text-white'
-                              : 'text-gray-700 hover:bg-violet-500 hover:text-white'
-                            }
-                          `}
-                        >
-                          <item.icon className="h-4 w-4" />
-                          <span>{item.title}</span>
-                        </SidebarMenuButton>
-                      )}
-                    </NavLink>
-                  </SidebarMenuItem>
+                      <Collapsible key={item.url}>
+                        <SidebarMenuItem>
+                        <NavLink to={item.url}>
+                          {({ isActive }) => (
+                            
+                            <SidebarMenuButton
+                              tooltip={item.title}
+                              className={
+                                `flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-violet-500 hover:text-white ${isActive
+                                  ? 'bg-violet-500 text-white'
+                                  : 'text-gray-700 hover:bg-violet-500 hover:text-white'
+                                }
+                              `}
+                            >
+                              <item.icon className="h-4 w-4" />
+                              <span>{item.title}</span>
+                            </SidebarMenuButton>
+                            
+                          )}
+                        </NavLink>
+                        </SidebarMenuItem>
+                        <CollapsibleContent>
+                          <SidebarMenuSub>
+                            {item.items?.map((subItem) => (
+                              <SidebarMenuSubItem key={subItem.title}>
+                                <SidebarMenuSubButton asChild>
+                                  <a href={subItem.url}>
+                                    <span>{subItem.title}</span>
+                                  </a>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </Collapsible>
                   ))}
                 </SidebarMenu>
             </SidebarGroupContent>

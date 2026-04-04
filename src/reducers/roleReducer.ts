@@ -1,10 +1,11 @@
 import axiosInstance from '@/axios/axiosInstance';
-import reducers from '@/reducers';
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import ENDPOINTS from '@/config/api.js';
+
 
 interface roleState {
     roles: string[],
-    loader: boolean,
+    loading: boolean,
     error: string,
     toast: {
         message: string | null;
@@ -15,7 +16,7 @@ interface roleState {
 
 const initialState : roleState = {
     roles: [],
-    loader: false,
+    loading: false,
     error: "",
     toast: {
         message: null,
@@ -23,13 +24,11 @@ const initialState : roleState = {
     },
 }
 
-
-
 export const getAllRoles = createAsyncThunk(
     "role/getAllRoles",
     async (_, {rejectWithValue}) => {
         try{
-            const response = await axiosInstance.get('/roles');
+            const response = await axiosInstance.get(ENDPOINTS.ENDPOINTS.roles.list());
             return response.data.roles;
         }catch(error){
             console.log(error);
@@ -43,8 +42,8 @@ export const addRole = createAsyncThunk(
     "role/addRole",
     async (role: string, {rejectWithValue}) => { 
         try{
-            // const response = await axiosInstance.post('/roles', {role});
-            // return response.data;
+            const response = await axiosInstance.post(ENDPOINTS.ENDPOINTS.roles.create(), {role});
+            return response.data;
             return true;
         }catch(error){
             console.log(error);
@@ -94,20 +93,21 @@ const roleReducer = createSlice({
             state.toast.message = null;
             state.toast.type = null;
         },
+        resetRolesState: () => initialState,
     },
     extraReducers:(builder)=>{
         builder
         .addCase(getAllRoles.pending,(state, action)=>{
-            console.log("getAllRoles Pending State")
+            state.loading = true;
         })
         .addCase(getAllRoles.fulfilled, (state: roleState, action)=>{
+            state.loading = false;
             state.roles = action.payload;
         })
         .addCase(getAllRoles.rejected,(state, action)=>{
-            console.log("getAllRoles Rejected State")
+            state.loading = false;
         })
         .addCase(addRole.pending, (state, action)=> {
-            console.log("addRole Pendindg state ");
             state.loader = true;
         })
         .addCase(addRole.fulfilled, (state, action:any)=> {
@@ -125,24 +125,35 @@ const roleReducer = createSlice({
             };
         })
         .addCase(deleteRole.pending, (state, action)=>{
-            console.log("deleteRole::Pending");
+            state.loading = true;
         })
          .addCase(deleteRole.fulfilled, (state, action)=>{
-            console.log("deleteRole::fulfilled");
+            state.loading = false;
+            state.toast = {
+                message: "Role deleted successfully",
+                type: "success",
+            };
+            
         })
         .addCase(deleteRole.rejected, (state, action)=>{
-            console.log("deleteRole::Rejected", action);
+            state.loading = false;
+            state.toast = {
+                message: "Failed to delete role",
+                type: "error",
+            };
         })
         .addCase(editRole.pending, (state, action)=>{
-            console.log("editRole::Pending");
+            state.loading = true;
         })
         .addCase(editRole.fulfilled, (state, action)=>{
+            state.loading = false;
             state.toast = {
                 message: "Role updated successfully",
                 type: "success",
             };
         })
         .addCase(editRole.rejected, (state, action)=>{
+            state.loading = false;
              state.toast = {
                 message: "Failed to update role",
                 type: "error",
@@ -151,5 +162,5 @@ const roleReducer = createSlice({
     }
 })
 
-export const {clearToast} = roleReducer.actions
+export const {clearToast, resetRolesState} = roleReducer.actions
 export default roleReducer.reducer;

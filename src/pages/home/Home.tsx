@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import './Home.scss';
+import Child from '@/pages/reports/Reports';
 
 
-const Home = () => {
 
-    useEffect(()=>{
-        console.log("Home called");
+const Home = ({}) => {
+
+    const memoData = useMemo(() => {
+        return { name: "John" };
     }, []);
     
     return(
         <>
-            <h1>User Home</h1>
+            <Child data={memoData} />
         </>
         
         

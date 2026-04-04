@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import AdminLayout from './layouts/AdminLayouts';
 
 
 // Example authentication check
 // let url = "/login";
 const isAuthenticated = () => {
-  const userData = JSON.parse(localStorage.getItem('userData'));
+  const location = useLocation();
+  const userData = JSON.parse(localStorage.getItem('userData') ?? "");
   if(localStorage.getItem('token') !== null){
+    console.log("Tokne found");
     // if(userData?.role === 'admin'){
     //   url = ("/admin/login");
     // }
     return true;
   }else{
+    console.log("Tokne not found");
     // const location = window.location.href;
     // if(location.includes('admin')){
     //   url = ("/admin/login")
@@ -25,7 +28,11 @@ const isAuthenticated = () => {
 
 // PrivateRoute Component
 const PrivateRoute = () => {
-  return isAuthenticated() ? <AdminLayout> <Outlet />  </AdminLayout>: <Navigate to="/login" />;
+  return isAuthenticated() ? 
+    <AdminLayout> 
+      <Outlet />  
+    </AdminLayout> : 
+    <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
