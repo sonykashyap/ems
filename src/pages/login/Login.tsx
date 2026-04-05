@@ -119,7 +119,7 @@ const loginWithGoogle = () => {
                     {/* <Label htmlFor="email">Email</Label> */}
                     <Input
                       id="email"
-                      type="email"
+                      type="text"
                       name='email'
                       placeholder='Email'
                       className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
