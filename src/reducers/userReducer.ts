@@ -2,8 +2,16 @@ import axiosInstance from '@/axios/axiosInstance';
 import {createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import ENDPOINTS from '@/config/api.js';
 
+
+interface UsersData {
+  id: string;
+  name: string;
+  email: string;
+  // add other fields
+}
+
 interface UserState {
-  users: string[],
+  users: UsersData[],
   loading: boolean,
   isAuthenticated: boolean,
   isCreated: boolean,
@@ -143,7 +151,6 @@ const userReducer = createSlice({
         builder
         .addCase(getAllUsers.pending, (state, action: ReturnType<typeof getAllUsers.pending>)=>{
             state.loading = true;
-            state.users = action.payload;
         })
         .addCase(getAllUsers.fulfilled, (state, action: ReturnType<typeof getAllUsers.fulfilled>)=>{
             state.loading = false;
@@ -151,7 +158,9 @@ const userReducer = createSlice({
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{
             state.loading = false;
-            state.error = action.payload;
+            state.error = {
+                message: action.error.message || "Something went wrong",
+            };
             if(action.payload?.code == "TOKEN_EXPIRED"){
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');

@@ -15,7 +15,6 @@ const isAuthenticated = () => {
     console.error("Invalid userData in localStorage");
   }
   if(localStorage.getItem('token') !== null){
-    console.log("Tokne found");
     // if(userData?.role === 'admin'){
     //   url = ("/admin/login");
     // }

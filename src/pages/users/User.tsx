@@ -185,7 +185,11 @@ const editUserhandler = (values) => {
         {
           isLoading ?
           <LoaderCircle /> :
-          <DataTable columns={columns} data={data} newlyAddedUserId={lastAddedUserId} />
+          <DataTable 
+            columns={columns} 
+            data={data} 
+            newlyAddedUserId={lastAddedUserId} 
+          />
         }
         {openDialog && <AlertDialogComponent 
           isOpen={openDialog} 
