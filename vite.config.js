@@ -7,7 +7,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({mode})=>{
   return{
     plugins: [react(), tailwindcss()],
-    base: "/",
+    base: process.env.VITE_BASE_PATH || "/ems",
     server:{
       port: 3000,
     },
