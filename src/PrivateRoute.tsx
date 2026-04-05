@@ -7,7 +7,13 @@ import AdminLayout from './layouts/AdminLayouts';
 // let url = "/login";
 const isAuthenticated = () => {
   const location = useLocation();
-  const userData = JSON.parse(localStorage.getItem('userData') ?? "");
+  let userData = null;
+  try{
+    const data = localStorage.getItem('userData');
+    userData = data ? JSON.parse(data) : null;
+  }catch(error){
+    console.error("Invalid userData in localStorage");
+  }
   if(localStorage.getItem('token') !== null){
     console.log("Tokne found");
     // if(userData?.role === 'admin'){
