@@ -18,5 +18,8 @@ export default {
             login: () => `/login`,
             logout: () => `/logout`,
         },
+         dashboard: {
+            dashboardData: () => `/dashboardData`,
+        },
     }
 }

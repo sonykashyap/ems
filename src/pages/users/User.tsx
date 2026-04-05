@@ -22,7 +22,6 @@ export type UsersData = {
   name: string
 }
 
-
 const User = () =>{
 
   const dispatch = useAppDispatch();

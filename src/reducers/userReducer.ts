@@ -7,7 +7,6 @@ interface UsersData {
   id: string;
   name: string;
   email: string;
-  // add other fields
 }
 
 interface UserState {
