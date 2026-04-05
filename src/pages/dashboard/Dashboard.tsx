@@ -1,21 +1,26 @@
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { dashboardData } from '@/reducers/dashboardReducer';
 import React, { useEffect, useState } from 'react';
 
-interface dashboardData {
+interface dashboardType {
   text: string;
-  value: string;
+  value: number;
 }
 
 const Dashboard = () => {
-
-    const [data, setData] = useState<dashboardData[]>([
-        {text: "Total monthly Expenses", value: "200/365"},
-        {text: "Total Revenue", value: "500k"},
-        {text: "Total Employees", value: "400"},
-        {text: "Total Projects", value: "100"},
-    ]);
+    const dispatch = useAppDispatch();
+    const totalUsers = useAppSelector(state=> state.dashboardReducer.totalUsers);
+    const totalRoles = useAppSelector(state=> state.dashboardReducer.totalRoles);
+    const data: dashboardType[] = [
+        {text: "Total Users", value: totalUsers},
+        {text: "Total Role", value: totalRoles},
+        {text: "Total Employees", value: 400},
+        {text: "Total Projects", value: 100},
+    ];
 
     useEffect(()=>{
         console.log("Dashboard Component called");
+        dispatch(dashboardData());
     },[]);
     
     return(
