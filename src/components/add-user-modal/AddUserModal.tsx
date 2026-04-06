@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import {useForm} from 'react-hook-form';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 import { useDispatch } from 'react-redux';
+import { getAllRoles } from '@/reducers/roleReducer';
+import { useAppSelector } from '@/hooks';
 
 
 type modalDialog = {
@@ -26,9 +28,16 @@ const formSchema = z.object({
     role: z.string(),
     userId: z.string().nullable().optional()
 });
-const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEditData, setIsEdit, editUserhandler}: modalDialog) => {
+const AddUserModal = ({
+    isModalOpen, 
+    setIsModalOpen, 
+    addNewUser, 
+    isEdit, 
+    userEditData, 
+    setIsEdit, 
+    editUserhandler}: modalDialog) => {
     const dispatch = useDispatch();
-
+    const roles = useAppSelector(state=> state.roleReducer.roles);
 
     const handleModalOpen = () => {
         setIsModalOpen(false);
@@ -40,8 +49,8 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEdit
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: !isEdit ? "" : userEditData.name,
-            email: !isEdit ? "" : userEditData.email,
-            role: !isEdit ? "" : userEditData.roleId.name,
+            email: !isEdit ? "" : userEditData?.email,
+            role: !isEdit ? "" : userEditData.roleId._id,
             userId: !isEdit ? null : userEditData._id,
         },
     });
@@ -52,12 +61,16 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEdit
         !isEdit ? addNewUser(values) : editUserhandler(values);
     }
 
+    useEffect(()=>{
+        dispatch(getAllRoles());
+    },[]);
+
     return(
         <>
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <Form {...form}>
                     
-                    <DialogContent className="max-w-full md:max-w-[800px]">
+                    <DialogContent className=" md:max-w-[800px]">
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                         <DialogHeader>
                             <DialogTitle></DialogTitle>
@@ -111,8 +124,16 @@ const AddUserModal = ({isModalOpen, setIsModalOpen, addNewUser, isEdit, userEdit
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-                                                        <SelectItem value="admin">admin</SelectItem>
-                                                        <SelectItem value="user">User</SelectItem>
+                                                        {/* <SelectItem value="admin">admin</SelectItem>
+                                                        <SelectItem value="user">User</SelectItem> */}
+                                                        {
+                                                            roles && roles.map(role=>{
+                                                                return <SelectItem 
+                                                                    key={role?._id} 
+                                                                    value={role._id}>{role?.name}
+                                                                </SelectItem>
+                                                            })
+                                                        }
                                                         
                                                         </SelectGroup>
                                                     </SelectContent>

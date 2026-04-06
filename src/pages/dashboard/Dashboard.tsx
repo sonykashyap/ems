@@ -13,7 +13,7 @@ const Dashboard = () => {
     const totalRoles = useAppSelector(state=> state.dashboardReducer.totalRoles);
     const data: dashboardType[] = [
         {text: "Total Users", value: totalUsers},
-        {text: "Total Role", value: totalRoles},
+        {text: "Total Roles", value: totalRoles},
         {text: "Total Employees", value: 400},
         {text: "Total Projects", value: 100},
     ];

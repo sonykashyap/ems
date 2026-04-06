@@ -14,6 +14,7 @@ import ContextMenu from '@/components/context-menu/ContextMenu';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import {LoaderCircle} from 'lucide-react';
+import Spinner from '@/components/spinner/Spinner';
 
 export type UsersData = {
   id: string
@@ -183,7 +184,9 @@ const editUserhandler = (values) => {
         </div>
         {
           isLoading ?
-          <LoaderCircle /> :
+          <div className="flex items-center justify-center gap-6">
+            <Spinner className="size-3" />
+          </div> :
           <DataTable 
             columns={columns} 
             data={data} 
@@ -197,14 +200,16 @@ const editUserhandler = (values) => {
           deleteMethod={deleteRoleHandler}
           message="Are you sure, you want to delete this?" /> }
 
-        {isModalOpen && <AddUserModal 
-          isModalOpen={isModalOpen} 
-          setIsModalOpen={setIsModalOpen} 
-          addNewUser={addNewUser} 
-          isEdit={isEdit} 
-          setIsEdit={setIsEdit} 
-          userEditData={userEditData} 
-          editUserhandler={editUserhandler} />  }
+        {isModalOpen && 
+          <AddUserModal 
+            isModalOpen={isModalOpen} 
+            setIsModalOpen={setIsModalOpen} 
+            addNewUser={addNewUser} 
+            isEdit={isEdit} 
+            setIsEdit={setIsEdit} 
+            userEditData={userEditData} 
+            editUserhandler={editUserhandler} 
+          />  }
       </>
     )
 }
