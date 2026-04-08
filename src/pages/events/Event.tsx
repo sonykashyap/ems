@@ -294,7 +294,7 @@ const Event = () => {
                                     <CardTitle className='text-lg'>{event.title.toUpperCase()}</CardTitle>
                                 </CardHeader>
                             <CardContent>
-                                <img src={"http://localhost:8000/"+event.imageURL} loading='lazy' className='rounded-2xl mb-3' alt={event.title} />
+                                <img src={`${import.meta.env.VITE_BACKEND_HOST}/`+event.imageURL} loading='lazy' className='rounded-2xl mb-3' alt={event.title} />
                                 <p>{event.description}</p>
                             </CardContent>
                             <CardFooter>
