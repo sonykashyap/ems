@@ -29,6 +29,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format } from "date-fns"
 import { Field, FieldLabel } from '@/components/ui/field';
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { addEvent, clearToast, listEvents } from '@/reducers/eventReducer';
+import { toast } from 'sonner';
+import { process } from 'zod/v4/core';
 
 
 type eventData = {
@@ -50,71 +54,49 @@ const formattedDate = currentDate.toLocaleDateString('en-US', {
 const formSchema = z.object({
     title: z.string(),
     description: z.string(),
-    imageURL: z.string()
+    imageURL: z.string(),
+    eventDate: z.string()
 });
-
 
 
 const Event = () => {
 
+    const dispatch = useAppDispatch();
+    const toaster = useAppSelector(state=> state.eventReducer.toast);
+    const events = useAppSelector(state=> state.eventReducer.events);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [date, setDate] = React.useState<Date>();
-    const [events, setEvents] = useState<eventData[]>([
-        {
-            _id: "dsvdsfvvfddvdfdf43",
-            title: "Lohri celebration",
-            image: "http://lcalhost:3000/images/event.jpg",
-            description: "Lohri function celebration  on 13th January at 12PM to 1:00 PM",
-            eventDate: formattedDate
-        },
-        {
-            _id: "dsvdsfvvfddvdfd2e23",
-            title: "Independence day celebration",
-            image: "http://localhost:3000/images/event.jpg",
-            description: "Independence day decoration and flag",
-            eventDate: formattedDate
-        },
-        {
-            _id: "dsvdsfvvfddvdfsf3232",
-            title: "Colourfull event of Holi",
-            image: "http://lcalhost:3000/images/event.jpg",
-            description: "Lohri function celebration on 13th January at 12PM to 1:00 PM",
-            eventDate: formattedDate
-        },
-        {
-            _id: "dsvdsfvvfddvdfs67dd",
-            title: "EID event at office 425",
-            image: "http://lcalhost:3000/images/event.jpg",
-            description: "Lohri function celebration on 13th January at 12PM to 1:00 PM",
-            eventDate: formattedDate
-        },
-        {
-            _id: "dsvdsfvvfddvdfsf367cd",
-            title: "Blood donation camp ",
-            image: "http://lcalhost:3000/images/event.jpg",
-            description: "Lohri function celebration on 13th January at 12PM to 1:00 PM",
-            eventDate: formattedDate
-        }
-    ]);
+    const [file, setFile] = useState<File>();
 
+    useEffect(()=>{
+        console.log("Date is ", date?.toLocaleDateString("en-US"));
+    },[date]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues:{
             title: "",
             description: "",
-            imageURL: ""
+            imageURL: "",
+            eventDate: "",
         }
     });
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try{
-          console.log("Events form submitted", values);
-          console.log("Selected date is ", format(date, "dd MMMM yyyy"));
-        //   setIsModalOpen(false);
+            const user = JSON.parse(localStorage.getItem("userData") ?? "");
+            const formData = new FormData();
+            formData.append("title", values.title);
+            formData.append("description", values.description);
+            formData.append("image", file);
+            formData.append("eventDate", date?.toLocaleDateString());
+            formData.append("userId", user.id);
+            console.log("Events form submitted", file);
+            dispatch(addEvent(formData));
+        //   console.log("Selected date is ", format(date, "dd MMMM yyyy"));
+          setIsModalOpen(false);
         }catch(error){
           console.log(error);
         }
-        
     }
 
     const resetFormValue = () => { // empty form value upon cancel or submission of form
@@ -123,7 +105,27 @@ const Event = () => {
         });
     }
 
+
+    useEffect(() => {
+    if (!toaster.message) return;
+    
+    toast(toaster.message, {
+        classNames: {
+        toast:
+            toaster.type === "success"
+            ? "!bg-green-200"
+            : "!bg-red-200",
+        title:
+            toaster.type === "success"
+            ? "!text-green-600 font-bold"
+            : "!text-red-600 font-bold",
+        },
+    });
+    dispatch(clearToast());
+    }, [toaster]);
+
     useEffect(()=>{
+        dispatch(listEvents());
         // const obj = {
         //     "a_b_c": 1,
         //     "a_b_d": 2
@@ -153,6 +155,10 @@ const Event = () => {
 
         // console.log("Result is ", result);
     },[]);
+
+    useEffect(()=>{
+        console.log("EEEEEE is ", events);
+    },[events]);
 
     return(
         <>
@@ -199,20 +205,20 @@ const Event = () => {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                        <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Description</FormLabel>
-                                            <FormControl>
-                                            <Input {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                        
-                                    )}
-                                />
+                                    <FormField
+                                        control={form.control}
+                                        name="description"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Description</FormLabel>
+                                                <FormControl>
+                                                <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                            
+                                        )}
+                                    />
                                 </div>
                             </div>
                             <div className='grid grid-cols-2'>
@@ -224,7 +230,15 @@ const Event = () => {
                                             <FormItem>
                                                 <FormLabel>Event Image</FormLabel>
                                                 <FormControl>
-                                                <Input type='file' {...field} />
+                                                <Input 
+                                                    type='file' 
+                                                    {...field} 
+                                                    onChange={(e) => {
+                                                        if (e.target.files?.[0]) {
+                                                        setFile(e.target.files[0]);
+                                                        }
+                                                    }}
+                                                />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -247,6 +261,7 @@ const Event = () => {
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0" align="start">
                                             <Calendar
+                                                name="eventDate"
                                                 mode="single"
                                                 selected={date}
                                                 onSelect={setDate}
@@ -273,17 +288,17 @@ const Event = () => {
 
             <div className='grid md:grid-cols-3 gap-5'>
                 {
-                    events.map((event)=>{
+                    events && events.map((event)=>{
                         return <Card className='text-center' key={event._id}>
                                 <CardHeader>
                                     <CardTitle className='text-lg'>{event.title.toUpperCase()}</CardTitle>
                                 </CardHeader>
                             <CardContent>
-                                <img src={ImgEvent} loading='lazy' className='rounded-2xl mb-3' alt={event.title} />
+                                <img src={"http://localhost:8000/"+event.imageURL} loading='lazy' className='rounded-2xl mb-3' alt={event.title} />
                                 <p>{event.description}</p>
                             </CardContent>
                             <CardFooter>
-                                <p>{event.eventDate}</p>
+                                <p>{event.event_date}</p>
                             </CardFooter>
                         </Card>
                     })

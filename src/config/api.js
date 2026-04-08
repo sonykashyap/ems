@@ -18,8 +18,13 @@ export default {
             login: () => `/login`,
             logout: () => `/logout`,
         },
-         dashboard: {
+        dashboard: {
             dashboardData: () => `/dashboardData`,
         },
+        event:{
+            getEvents: () => `/events`,
+            addEvent: () => `/event`,
+            
+        }
     }
 }
