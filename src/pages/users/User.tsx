@@ -19,7 +19,7 @@ import Spinner from '@/components/spinner/Spinner';
 export type UsersData = {
   id: string
   email: number
-  status: "pending" | "Active" | "deleted"
+  status: "pending" | "active" | "deleted"
   name: string
 }
 

@@ -3,14 +3,23 @@ import {createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import ENDPOINTS from '@/config/api.js';
 
 
+type roleIdType = {
+    createdAt: string;
+    description: string;
+    name: string;
+    updatedAt: string;
+    _id: string;
+}
+
 interface UsersData {
   id: string;
   name: string;
   email: string;
+  roleId: roleIdType[]
 }
 
 interface UserState {
-  users: UsersData[],
+  users: [],
   loading: boolean,
   isAuthenticated: boolean,
   isCreated: boolean,
@@ -23,6 +32,8 @@ interface UserState {
         code?: string;
         status?: number;
     } | null;
+    userProfile: string;
+    userProfileData: UsersData | null;
 
 }
 
@@ -36,6 +47,9 @@ const initialState : UserState = {
         message: null,
         type: null,
     },
+    userProfile: "",
+    userProfileData: []
+    
 }
 
 //Get all users
@@ -132,6 +146,44 @@ export const resetPassword = createAsyncThunk(
     }
 )
 
+export const getProfile = createAsyncThunk(
+    'user/profile',
+    async()=>{
+        try{
+            const user = JSON.parse(localStorage.getItem("userData") ?? "");
+            console.log("userId is ", user.id);
+            const response = await axiosInstance.get(`/profile/${user.id}`);
+            return response.data.data;
+        }catch(error){
+            if(error instanceof Error){
+                throw new Error(error.message);
+            }else{
+                throw new Error("Something went wrong");
+            }
+            
+        }
+    }
+)
+
+export const updateProfile = createAsyncThunk(
+    'user/updateProfile',
+    async(payload)=>{
+        try{
+            const user = JSON.parse(localStorage.getItem("userData") ?? "");
+            console.log("Payload is ", payload);
+            const response = await axiosInstance.patch(`/update-profile/${user.id}`, payload);
+            return response.data.data;
+        }catch(error){
+            if(error instanceof Error){
+                throw new Error(error.message);
+            }else{
+                throw new Error("Something went wrong");
+            }
+            
+        }
+    }
+)
+
 const userReducer = createSlice({
     name: "userReducer",
     initialState,
@@ -143,6 +195,10 @@ const userReducer = createSlice({
         clearToast: (state) => {
             state.toast.message = null;
             state.toast.type = null;
+        },
+        getUserProfilePic: (state) => {
+            const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+            state.userProfile = userData.userProfile;
         },
         resetUserState: () => initialState,
     },
@@ -221,8 +277,35 @@ const userReducer = createSlice({
                 type: "success"
             }
         })
+        .addCase(getProfile.fulfilled, (state, action)=>{
+            state.userProfileData = action.payload;
+            console.log("User PRofile repsonse is ", action.payload);
+        })
+        .addCase(getProfile.rejected, (state, action)=>{
+            state.toast = {
+                message : "Could not fetch user profile data.",
+                type: "error"
+            }
+        })
+        .addCase(updateProfile.pending, (state , action)=>{
+            state.loading = true;
+        })
+        .addCase(updateProfile.fulfilled, (state , action)=>{
+            state.loading = false;
+            state.toast = {
+                message: "User updated successfully",
+                type: "success"
+            }
+        })
+        .addCase(updateProfile.rejected, (state , action)=>{
+            state.loading = false;
+            state.toast = {
+                message: "Failed to update user information",
+                type: "error"
+            }
+        })
     }
 });
 
-export const {LOGOUT, clearToast, resetUserState} = userReducer.actions;
+export const {LOGOUT, clearToast, resetUserState, getUserProfilePic} = userReducer.actions;
 export default userReducer.reducer;
