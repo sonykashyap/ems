@@ -166,7 +166,7 @@ const Role = () => {
       <ModalDialog isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
         <Form {...form}>
                     
-          <DialogContent className="max-w-full md:max-w-[500px]">
+          <DialogContent className=" md:max-w-xl">
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <DialogHeader>
                 <DialogTitle></DialogTitle>

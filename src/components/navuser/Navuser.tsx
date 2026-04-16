@@ -24,7 +24,6 @@ const Navuser = () => {
     const navigate = useNavigate();
     const { isMobile } = useSidebar();
     const userData =  JSON.parse(localStorage.getItem("userData") ?? "");
-    // const roles = useAppSelector(state=> state.roleReducer.roles);
     const userProfile = useAppSelector(state=> state.userReducer.userProfileData);
     const [userName, setUserName] = useState("");
 
@@ -44,9 +43,10 @@ const Navuser = () => {
 
     },[userProfile]);
 
-    useEffect(()=>{
+    useEffect(()=> {
         dispatch(getProfile());
-    },[]);
+    },[dispatch]);
+
 
     return(
         <>

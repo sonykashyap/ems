@@ -43,11 +43,12 @@ const Profile = () => {
     },[userProfileData]);
 
 
-    const updateUserProfile = () => {
+    const updateUserProfile = async () => {
         const payload = {
             name: formData?.name
         }
-        dispatch(updateProfile(payload));
+        await dispatch(updateProfile(payload)).unwrap();
+        dispatch(getProfile());
     }
 
 
@@ -71,16 +72,20 @@ const Profile = () => {
 
     return(
         <>
-            <div className='w-[600px] m-auto bg-white mt-16 p-6 relative rounded-2xl'>
+            <div className='w-full lg:w-[600px] m-auto bg-white mt-16 p-6 relative rounded-2xl'>
                 <div className='flex justify-center items-center rounded mb-10'>
                     {
                         userProfile ?
                         <img src={userProfile} alt='' />
-                        : <Avatar className="h-40 w-40 -mt-[100px] bg-white rounded-full p-4 border boder-black/10 shadow-xl">
+                        : <Avatar className="h-40 w-40 -mt-[100px] group relative bg-white rounded-full p-4 border boder-black/10 shadow-xl">
                             <AvatarImage src={AvatarImg} alt="User profile image" className='' />
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                            {/* <span 
+                                className='group-hover:block absolute shadow bg-white/70 flex items-center justify-center rounded-full w-full h-full -mt-[100px]'
+                            >Edit</span> */}
                         </Avatar>
                     }
+                    
                 </div>
                 <div>
                     <div className='grid grid-cols-1'>
