@@ -48,7 +48,7 @@ const initialState : UserState = {
         type: null,
     },
     userProfile: "",
-    userProfileData: []
+    userProfileData: null
     
 }
 
@@ -60,13 +60,16 @@ export const getAllUsers = createAsyncThunk(
             const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list());
             return users.data.data;
         }catch(error){
-            if(error.response.data.message === "Token expired"){
+            if(error instanceof Error){
+                if(error?.response.data.message === "Token expired"){
                 return rejectWithValue({
                     message: error.response.data.message,
                     code: error.response.data.code,
                     status: error.response.status
                 });
             }
+            }
+            
         }
     }
 )
@@ -95,11 +98,15 @@ export const editUser = createAsyncThunk(
     "user/edit",
     async (values, {rejectWithValues}) =>{
         try{
-            console.log("Values to edit is ", values);
             const response = await axiosInstance.patch(ENDPOINTS.ENDPOINTS.users.edit(values.userId), values);
             return response;
         }catch(error){
-            console.log(error);
+            if(error instanceof Error){
+                throw new Error(error.message);
+            }else{
+                throw new Error("Something went wrong");
+            }
+            
         }
     }
 )
@@ -124,7 +131,6 @@ export const forgotPassword = createAsyncThunk(
     'user/forgotPassword',
     async (payload) => {
         try{
-            console.log("Payload is ", payload);
             const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.forgotPassword(), payload);
             return result;
         }catch(error){
@@ -170,9 +176,8 @@ export const updateProfile = createAsyncThunk(
     async(payload)=>{
         try{
             const user = JSON.parse(localStorage.getItem("userData") ?? "");
-            console.log("Payload is ", payload);
             const response = await axiosInstance.patch(`/update-profile/${user.id}`, payload);
-            return response.data.data;
+            return response.data;
         }catch(error){
             if(error instanceof Error){
                 throw new Error(error.message);
@@ -279,7 +284,6 @@ const userReducer = createSlice({
         })
         .addCase(getProfile.fulfilled, (state, action)=>{
             state.userProfileData = action.payload;
-            console.log("User PRofile repsonse is ", action.payload);
         })
         .addCase(getProfile.rejected, (state, action)=>{
             state.toast = {

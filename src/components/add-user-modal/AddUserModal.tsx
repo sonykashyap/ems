@@ -70,7 +70,7 @@ const AddUserModal = ({
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <Form {...form}>
                     
-                    <DialogContent className=" md:max-w-[800px]">
+                    <DialogContent className=" md:max-w-xl">
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                         <DialogHeader>
                             <DialogTitle></DialogTitle>
