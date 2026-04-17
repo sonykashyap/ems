@@ -88,7 +88,7 @@ const Event = () => {
             formData.append("title", values.title);
             formData.append("description", values.description);
             formData.append("image", file);
-            formData.append("eventDate", date?.toLocaleDateString());
+            formData.append("eventDate", String(date?.toLocaleDateString()));
             formData.append("userId", user.id);
             console.log("Events form submitted", file);
             dispatch(addEvent(formData));

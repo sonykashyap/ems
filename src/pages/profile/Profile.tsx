@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { clearToast, getProfile, getUserProfilePic, updateProfile } from '@/reducers/userReducer';
+import { clearToast, getProfile, getUserProfilePic, updateProfile, updateProfilePic } from '@/reducers/userReducer';
 import React, { useEffect, useState } from 'react';
 import AvatarImg from '@/assets/images/avatar.webp';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
@@ -29,7 +29,7 @@ const Profile = () => {
     const toaster = useAppSelector(state=> state.userReducer.toast);
     const loading = useAppSelector(state=> state.userReducer.loading);
     const [formData, setFormData] = useState<UsersData | null>(null);
-
+    const [show, setShow] = useState(false);
 
     useEffect(()=>{
         dispatch(getUserProfilePic());
@@ -51,6 +51,14 @@ const Profile = () => {
         dispatch(getProfile());
     }
 
+    const handleProfileChange =async (e) => {
+        console.log("user Profile Changed", e.target.files[0]);
+        const formData = new FormData();
+        formData.append("profile_pic", e.target.files[0]);
+
+        await dispatch(updateProfilePic(formData)).unwrap();
+    }
+
 
     useEffect(() => {
     if (!toaster.message) return;
@@ -70,22 +78,32 @@ const Profile = () => {
     dispatch(clearToast());
     }, [toaster]);
 
+    useEffect(() => {
+        setShow(true);
+    }, []);
+
     return(
         <>
-            <div className='w-full lg:w-[600px] m-auto bg-white mt-16 p-6 relative rounded-2xl'>
-                <div className='flex justify-center items-center rounded mb-10'>
+            <div 
+                className={`transform transition-all duration-300 w-full lg:w-[600px] 
+                m-auto bg-white mt-20 p-6 relative rounded-2xl ${show ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}>
+                <div className='flex justify-end items-center relative rounded mb-10'>
                     {
                         userProfile ?
                         <img src={userProfile} alt='' />
-                        : <Avatar className="h-40 w-40 -mt-[100px] group relative bg-white rounded-full p-4 border boder-black/10 shadow-xl">
+                        : <Avatar className="h-40 w-40 -mt-[100px] absolute bg-white left-[50%] -translate-x-1/2 rounded-full p-4 border boder-black/10 shadow-xl">
                             <AvatarImage src={AvatarImg} alt="User profile image" className='' />
                             <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                            {/* <span 
-                                className='group-hover:block absolute shadow bg-white/70 flex items-center justify-center rounded-full w-full h-full -mt-[100px]'
-                            >Edit</span> */}
                         </Avatar>
                     }
-                    
+                    <label htmlFor="file" className='text-blue-500 hover:cursor-pointer hover:underline'>Edit Profile Pic</label>
+                    <input
+                        id='file' 
+                        name='file' 
+                        type="file" 
+                        className='hidden'
+                        onChange={(e)=>handleProfileChange(e)}
+                    />
                 </div>
                 <div>
                     <div className='grid grid-cols-1'>
