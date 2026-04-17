@@ -187,6 +187,22 @@ export const updateProfile = createAsyncThunk(
             
         }
     }
+);
+
+export const updateProfilePic = createAsyncThunk(
+    "user/updateProfilePic",
+    async(formData)=>{
+        try{
+            const user = JSON.parse(localStorage.getItem("userData") ?? "");
+            const response = await axiosInstance.patch(`/update-profile-pic/${user.id}`, formData);
+            return response.data;
+        }catch(error){
+            if(error instanceof Error){
+                throw new Error(error.message);
+            }
+            throw new Error("Something went wrong");
+        }
+    }
 )
 
 const userReducer = createSlice({
@@ -305,6 +321,20 @@ const userReducer = createSlice({
             state.loading = false;
             state.toast = {
                 message: "Failed to update user information",
+                type: "error"
+            }
+        })
+        .addCase(updateProfilePic.fulfilled, (state,action)=>{
+            console.log("update Profile pic is ", action.payload);
+            state.toast = {
+                message: "Profile pic updated successfully",
+                type: "success"
+            }
+        })
+        .addCase(updateProfilePic.rejected, (state,action)=>{
+            console.log("update Profile pic is ", action.payload);
+            state.toast = {
+                message: "Failed to update profile pic",
                 type: "error"
             }
         })
