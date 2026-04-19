@@ -24,17 +24,18 @@ type UsersData = {
 
 const Profile = () => {
     const dispatch = useAppDispatch();
-    const userProfile = useAppSelector(state=> state.userReducer.userProfile);
+    const userProfilePic = localStorage.getItem("userProfilePic") ?? "";
     const userProfileData = useAppSelector(state=> state.userReducer.userProfileData);
     const toaster = useAppSelector(state=> state.userReducer.toast);
     const loading = useAppSelector(state=> state.userReducer.loading);
     const [formData, setFormData] = useState<UsersData | null>(null);
     const [show, setShow] = useState(false);
+    const [profilePic, setProfilePic] = useState("");
 
     useEffect(()=>{
-        dispatch(getUserProfilePic());
         dispatch(getProfile());
     },[dispatch]);
+
 
     useEffect(()=>{
         if(userProfileData){
@@ -45,7 +46,7 @@ const Profile = () => {
 
     const updateUserProfile = async () => {
         const payload = {
-            name: formData?.name
+            name: formData?.name ?? ""
         }
         await dispatch(updateProfile(payload)).unwrap();
         dispatch(getProfile());
@@ -88,19 +89,21 @@ const Profile = () => {
                 className={`transform transition-all duration-300 w-full lg:w-[600px] 
                 m-auto bg-white mt-20 p-6 relative rounded-2xl ${show ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}>
                 <div className='flex justify-end items-center relative rounded mb-10'>
-                    {
-                        userProfile ?
-                        <img src={userProfile} alt='' />
-                        : <Avatar className="h-40 w-40 -mt-[100px] absolute bg-white left-[50%] -translate-x-1/2 rounded-full p-4 border boder-black/10 shadow-xl">
-                            <AvatarImage src={AvatarImg} alt="User profile image" className='' />
-                            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                        </Avatar>
-                    }
+                    <Avatar className="h-40 w-40 -mt-[100px] absolute bg-white left-[50%] -translate-x-1/2 rounded-full p-2 border boder-black/10 shadow-xl">
+                        <AvatarImage 
+                            src={ userProfilePic.length > 0 ? `${import.meta.env.VITE_BACKEND_HOST}/`+userProfilePic : undefined} 
+                            alt="User profile image" 
+                            className='w-full h-full rounded-full object-cover' 
+                        />
+                        <AvatarFallback className="rounded-lg">
+                            <img src={AvatarImg} alt="" />
+                        </AvatarFallback>
+                    </Avatar>
                     <label htmlFor="file" className='text-blue-500 hover:cursor-pointer hover:underline'>Edit Profile Pic</label>
                     <input
                         id='file' 
-                        name='file' 
-                        type="file" 
+                        name='file'
+                        type="file"
                         className='hidden'
                         onChange={(e)=>handleProfileChange(e)}
                     />

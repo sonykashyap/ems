@@ -195,6 +195,7 @@ export const updateProfilePic = createAsyncThunk(
         try{
             const user = JSON.parse(localStorage.getItem("userData") ?? "");
             const response = await axiosInstance.patch(`/update-profile-pic/${user.id}`, formData);
+            console.log("REAPONSA::", response);
             return response.data;
         }catch(error){
             if(error instanceof Error){
@@ -217,10 +218,10 @@ const userReducer = createSlice({
             state.toast.message = null;
             state.toast.type = null;
         },
-        getUserProfilePic: (state) => {
-            const userData = JSON.parse(localStorage.getItem("userData") ?? "");
-            state.userProfile = userData.userProfile;
-        },
+        // getUserProfilePic: (state) => {
+        //     const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+        //     state.userProfile = userData.userProfile;
+        // },
         resetUserState: () => initialState,
     },
     extraReducers:(builder)=>{
@@ -325,7 +326,7 @@ const userReducer = createSlice({
             }
         })
         .addCase(updateProfilePic.fulfilled, (state,action)=>{
-            console.log("update Profile pic is ", action.payload);
+            localStorage.setItem("userProfilePic", action.payload.data.user_profile_pic);
             state.toast = {
                 message: "Profile pic updated successfully",
                 type: "success"
