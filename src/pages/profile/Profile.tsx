@@ -95,8 +95,8 @@ const Profile = () => {
                             alt="User profile image" 
                             className='w-full h-full rounded-full object-cover' 
                         />
-                        <AvatarFallback className="rounded-lg">
-                            <img src={AvatarImg} alt="" />
+                        <AvatarFallback className="rounded-lg flex justify-center items-center">
+                            <img src={AvatarImg} alt="" className='w-34 h-34 object-cover' />
                         </AvatarFallback>
                     </Avatar>
                     <label htmlFor="file" className='text-blue-500 hover:cursor-pointer hover:underline'>Edit Profile Pic</label>

@@ -218,10 +218,10 @@ const userReducer = createSlice({
             state.toast.message = null;
             state.toast.type = null;
         },
-        // getUserProfilePic: (state) => {
-        //     const userData = JSON.parse(localStorage.getItem("userData") ?? "");
-        //     state.userProfile = userData.userProfile;
-        // },
+        getUserProfilePic: (state) => {
+            const userData = JSON.parse(localStorage.getItem("userProfilePic") ?? "");
+            state.userProfile = userData.userProfile;
+        },
         resetUserState: () => initialState,
     },
     extraReducers:(builder)=>{
