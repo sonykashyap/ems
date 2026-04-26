@@ -108,17 +108,17 @@ const roleReducer = createSlice({
             state.loading = false;
         })
         .addCase(addRole.pending, (state, action)=> {
-            state.loader = true;
+            state.loading = true;
         })
         .addCase(addRole.fulfilled, (state, action:any)=> {
-            state.loader = false;
+            state.loading = false;
             state.toast = {
             message: "Role created successfully",
             type: "success",
             };
         })
         .addCase(addRole.rejected, (state, action)=> {
-            state.loader = false;
+            state.loading = false;
             state.toast = {
                 message: "Failed to create role",
                 type: "error",

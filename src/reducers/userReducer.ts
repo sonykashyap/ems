@@ -27,13 +27,20 @@ interface UserState {
         message: string | null;
         type: "success" | "error" | null;
     }
-        error: {
+    error: {
         message: string;
         code?: string;
         status?: number;
     } | null;
     userProfile: string;
     userProfileData: UsersData | null;
+    page: number;
+    totalPages: number;
+    limit: number;
+    total: number;
+    sort: string;
+    order: string;
+    search: string;
 
 }
 
@@ -48,17 +55,24 @@ const initialState : UserState = {
         type: null,
     },
     userProfile: "",
-    userProfileData: null
+    userProfileData: null,
+    page: 1,
+    totalPages: 0,
+    limit: 5,
+    total: 0,
+    sort: "createdAt",
+    order: "desc",
+    search: ""
     
 }
 
 //Get all users
 export const getAllUsers = createAsyncThunk(
     "auth/getAllUsers",
-    async (_,{rejectWithValue}) => {
+    async (page:number,{rejectWithValue}) => {
         try{
-            const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list());
-            return users.data.data;
+            const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list(page));
+            return users.data;
         }catch(error){
             if(error instanceof Error){
                 if(error?.response.data.message === "Token expired"){
@@ -210,7 +224,7 @@ const userReducer = createSlice({
     name: "userReducer",
     initialState,
     reducers:{
-        LOGOUT(state, action){
+        LOGOUT(){
             localStorage.removeItem("token");
             localStorage.removeItem("role");
         },
@@ -222,6 +236,10 @@ const userReducer = createSlice({
             const userData = JSON.parse(localStorage.getItem("userProfilePic") ?? "");
             state.userProfile = userData.userProfile;
         },
+        setPage: (state,action)=>{
+            console.log("Page is ",action.payload);
+            state.page = action.payload;
+        },
         resetUserState: () => initialState,
     },
     extraReducers:(builder)=>{
@@ -231,7 +249,11 @@ const userReducer = createSlice({
         })
         .addCase(getAllUsers.fulfilled, (state, action: ReturnType<typeof getAllUsers.fulfilled>)=>{
             state.loading = false;
-            state.users = action.payload;
+            state.users = action.payload.data;
+            // state.page = action.payload.page;
+            state.totalPages = action.payload.totalPages;
+            state.total = action.payload.total;
+            state.limit = action.payload.limit;
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{
             state.loading = false;
@@ -342,5 +364,5 @@ const userReducer = createSlice({
     }
 });
 
-export const {LOGOUT, clearToast, resetUserState, getUserProfilePic} = userReducer.actions;
+export const {LOGOUT, clearToast, resetUserState, getUserProfilePic, setPage} = userReducer.actions;
 export default userReducer.reducer;
