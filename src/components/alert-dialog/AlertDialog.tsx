@@ -7,16 +7,14 @@ import {
     AlertDialogDescription, 
     AlertDialogFooter, 
     AlertDialogHeader, 
-    AlertDialogTitle, 
-    AlertDialogTrigger } from '@/components/ui/alert-dialog';
+    AlertDialogTitle } from '@/components/ui/alert-dialog';
 
-import { deleteUserById, getAllUsers } from '@/reducers/userReducer';
+
 import { useDispatch } from 'react-redux';
-import {toast} from 'sonner';
 
 type alertDialog = {
     message: string,
-    isOpen: Boolean,
+    isOpen: boolean,
     setOpenDialog: Dispatch<SetStateAction<boolean>>,
     id: string | null,
     deleteMethod: Dispatch<SetStateAction<void>>,
@@ -63,8 +61,8 @@ const AlertDialogComponent = ({message, isOpen, setOpenDialog, id, deleteMethod 
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setOpenDialog(false)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={deleteHandler}>Delete</AlertDialogAction>
+                        <AlertDialogCancel onClick={() => setOpenDialog(false)} className='hover:bg-white hover:text-black'>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={deleteHandler} className='text-white hover:bg-red-600 bg-red-500'>Delete</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

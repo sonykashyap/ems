@@ -1,0 +1,25 @@
+name: Frontend CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install deps
+        run: npm Install
+      - name: Build Project
+        run: npm run build
+
+      - name: Run lint
+        run: npm run lint
+        continue-on-error: true
