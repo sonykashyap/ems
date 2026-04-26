@@ -31,12 +31,13 @@ const User = () =>{
   const error = useAppSelector((state: RootState)=> state.userReducer.error);
   const isLoading = useAppSelector((state: RootState)=> state.userReducer.loading);
   const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
+  const page = useAppSelector(state=> state.userReducer.page);
   const [openDialog, setOpenDialog] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [lastAddedUserId, setLastAddedUserId] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [userEditData, setUserEditData] = useState<object | null>({});
+  const [userEditData, setUserEditData] = useState<object>({});
 
   const columns: ColumnDef<UsersData>[] = [
     {
@@ -53,7 +54,7 @@ const User = () =>{
       cell: ({row})=>{
         const Role = row.original
         return (
-          <span> {Role.roleId.name} </span>
+          <span> {Role?.roleId.name} </span>
         )
       }
     },
@@ -166,8 +167,8 @@ const editUserhandler = (values) => {
   }, [toastState]);
 
   useEffect(()=>{
-    dispatch(getAllUsers());
-  },[]);
+    dispatch(getAllUsers(page));
+  },[page]);
 
   useEffect(()=>{
     if(error?.code == "TOKEN_EXPIRED"){
@@ -190,7 +191,7 @@ const editUserhandler = (values) => {
           <DataTable 
             columns={columns} 
             data={data} 
-            newlyAddedUserId={lastAddedUserId} 
+            newlyAddedUserId={lastAddedUserId}
           />
         }
         {openDialog && <AlertDialogComponent 
