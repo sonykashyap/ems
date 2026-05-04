@@ -44,7 +44,6 @@ export function DataTable<TData, TValue>({
   })
   const pages = getPagination(page, totalPages);
 
-
   const handlePageChange = (newPage: number) => {
     dispatch(setPage(newPage));
   }
@@ -103,40 +102,43 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 mt-4">
+      {
+        pages.length > 0 &&
+        <div className="flex items-center justify-end space-x-2 mt-4">
 
-        <Button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 1}
-        >
-            Prev
-          </Button>
-
-          {/* Page Numbers */}
-          {pages.map((p, index) =>
-            p === "..." ? (
-              <span key={index} className="px-2">...</span>
-            ) : (
-              <Button
-                key={index}
-                variant={p === page ? "default" : "outline"}
-                onClick={() => handlePageChange(p)}
-              >
-                {p}
-              </Button>
-            )
-          )}
-
-          {/* Next */}
           <Button
-            onClick={() => handlePageChange(page + 1)}
-            disabled={page === totalPages}
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
           >
-            Next
-          </Button>
+              Prev
+            </Button>
+
+            {/* Page Numbers */}
+            {pages.map((p, index) =>
+              p === "..." ? (
+                <span key={index} className="px-2">...</span>
+              ) : (
+                <Button
+                  key={index}
+                  variant={p === page ? "default" : "outline"}
+                  onClick={() => handlePageChange(p)}
+                >
+                  {p}
+                </Button>
+              )
+            )}
+
+            {/* Next */}
+            <Button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </Button>
 
 
-      </div>
+        </div>
+      }
     </div>
     
   )

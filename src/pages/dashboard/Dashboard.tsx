@@ -12,9 +12,9 @@ const Dashboard = () => {
     const totalUsers = useAppSelector(state=> state.dashboardReducer.totalUsers);
     const totalRoles = useAppSelector(state=> state.dashboardReducer.totalRoles);
     const data: dashboardType[] = [
-        {text: "Total Users", value: totalUsers},
+        {text: "Total Employees", value: totalUsers},
         {text: "Total Roles", value: totalRoles},
-        {text: "Total Employees", value: 400},
+        {text: "Total Present", value: 400},
         {text: "Total Projects", value: 100},
     ];
 
@@ -28,7 +28,7 @@ const Dashboard = () => {
             <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
                 {data && data.map((d, i)=>{
                     return <div key={i} 
-                        className={`rounded-lg z-1 group relative before:absolute 
+                        className={`rounded-lg z-1 group relative before:absolute bg-white
                         before:content[""] before:top-0 transition before:z-[-1] before:h-0
                         before:bg-purple-500 before:w-full before:left-0 hover:before:h-4/5 
                         before:rounded-b-[50%] text-black py-8 px-4 shadow

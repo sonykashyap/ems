@@ -10,7 +10,14 @@ interface roleState {
     toast: {
         message: string | null;
         type: "success" | "error" | null;
-    }
+    },
+    page: 1,
+    totalPages: 0,
+    limit: 5,
+    total: 0,
+    sort: "createdAt",
+    order: "desc",
+    search: ""
 }
 
 
@@ -22,13 +29,20 @@ const initialState : roleState = {
         message: null,
         type: null,
     },
+    page: 1,
+    totalPages: 0,
+    limit: 5,
+    total: 0,
+    sort: "createdAt",
+    order: "desc",
+    search: ""
 }
 
 export const getAllRoles = createAsyncThunk(
     "role/getAllRoles",
-    async (_, {rejectWithValue}) => {
+    async (page:number, {rejectWithValue}) => {
         try{
-            const response = await axiosInstance.get(ENDPOINTS.ENDPOINTS.roles.list());
+            const response = await axiosInstance.get(ENDPOINTS.ENDPOINTS.roles.list(page));
             return response.data.roles;
         }catch(error){
             console.log(error);
