@@ -57,7 +57,6 @@ const AddUserModal = ({
 
     
     const onSubmit =  (values: z.infer<typeof formSchema>) => {
-        console.log("Values are ", values);
         !isEdit ? addNewUser(values) : editUserhandler(values);
     }
 
@@ -100,7 +99,7 @@ const AddUserModal = ({
                                     disabled={isEdit ? true : false}
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="mt-2">Email</FormLabel>
+                                            <FormLabel className="mt-5">Email</FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>
@@ -116,7 +115,7 @@ const AddUserModal = ({
                                     name="role"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel className="mt-2">Role</FormLabel>
+                                            <FormLabel className="mt-5">Assign a Role to User</FormLabel>
                                             <FormControl>
                                                 <Select onValueChange={field.onChange} value={field.value}>
                                                     <SelectTrigger className="w-full">

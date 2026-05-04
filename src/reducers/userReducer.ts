@@ -41,6 +41,7 @@ interface UserState {
     sort: string;
     order: string;
     search: string;
+    filterData: []
 
 }
 
@@ -62,7 +63,8 @@ const initialState : UserState = {
     total: 0,
     sort: "createdAt",
     order: "desc",
-    search: ""
+    search: "",
+    filterData: []
     
 }
 
@@ -72,6 +74,7 @@ export const getAllUsers = createAsyncThunk(
     async (page:number,{rejectWithValue}) => {
         try{
             const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list(page));
+            console.log("All the employees are ", users);
             return users.data;
         }catch(error){
             if(error instanceof Error){
@@ -94,11 +97,9 @@ export const addUser = createAsyncThunk(
     "users/addUser",
     async (values, { rejectWithValues, dispatch}) =>{
         try{
-            const jsonData = JSON.stringify(values);
             // const bytes = new Blob([jsonData]).size;
             // console.log("Data in KB is  ", (bytes/1024).toFixed(2));
-            const response = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.create(), jsonData);
-            // dispatch(getAllUsers());
+            const response = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.create(), values);
             return response;
         }catch(error){
             console.log("error:", error);
@@ -220,6 +221,23 @@ export const updateProfilePic = createAsyncThunk(
     }
 )
 
+
+export const filterUsers = createAsyncThunk(
+    "users/filters",
+    async (search) =>{
+        try{
+            const response = await axiosInstance.get(`/search?search=${search}`);
+            console.log("Sarch result is ", response);
+            return response;
+        }catch(error){
+            if(error instanceof Error){
+                throw new Error(error.message);
+            }
+            throw new Error("Something went wrong");
+        }
+    }
+)
+
 const userReducer = createSlice({
     name: "userReducer",
     initialState,
@@ -283,7 +301,6 @@ const userReducer = createSlice({
             }
         })
         .addCase(addUser.pending, (state, action)=>{
-            console.log("Pending state");
             state.loading = true;
         })
         .addCase(addUser.fulfilled, (state, action)=>{
@@ -360,6 +377,13 @@ const userReducer = createSlice({
                 message: "Failed to update profile pic",
                 type: "error"
             }
+        })
+        .addCase(filterUsers.fulfilled, (state,action)=>{
+            console.log("search acion called");
+            state.filterData = action.payload.data.data;
+        })
+        .addCase(filterUsers.rejected, (state,action)=>{
+            console.log("search rejected called");
         })
     }
 });

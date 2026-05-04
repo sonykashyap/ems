@@ -46,6 +46,7 @@ const Role = () => {
   const [roleData, setRoleEditData] = useState<object | null>({});
   const [id, setId] = useState<string | null>(null);
   const [isEdit,setIsEdit] = useState<boolean>(false);
+  const page = useAppSelector(state=> state.roleReducer.page);
   
   const columns: ColumnDef<RoleData>[] = [
     {
@@ -147,13 +148,13 @@ const Role = () => {
 }, [toastState]);
 
   useEffect(()=>{
-    dispatch(getAllRoles());
+    dispatch(getAllRoles(page));
   
     //Cleanup code goes here
     return () => {
       console.log("Cleanup goes here...")
     };
-  },[]);
+  },[page]);
 
   return(
     <>

@@ -54,7 +54,7 @@ const adminItems : SidebarLink[] = [
     active: true,
   },
   {
-    title: "Users",
+    title: "Employees",
     url: "/users",
     icon: User2,
     active: false,
