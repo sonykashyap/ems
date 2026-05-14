@@ -25,7 +25,7 @@ const Navuser = () => {
     const { isMobile } = useSidebar();
     const userData =  JSON.parse(localStorage.getItem("userData") ?? "");
     const userProfile = useAppSelector(state=> state.userReducer.userProfileData);
-    const userProfilePic = localStorage.getItem("userProfilePic") ?? "";
+    const userProfilePic =  useAppSelector(state=> state.userReducer.userProfile);;
     const [userName, setUserName] = useState("");
     const [profilePic, setProfilePic] = useState("")
 
@@ -33,9 +33,9 @@ const Navuser = () => {
         dispatch(LOGOUT());
         dispatch(resetRolesState());
         dispatch(resetUserState());
-        setTimeout(()=>{
+        // setTimeout(()=>{
         navigate("/login");
-        }, 500);
+        // }, 500);
     }
 
     useEffect(()=>{
@@ -46,8 +46,8 @@ const Navuser = () => {
     },[userProfile]);
 
     useEffect(()=> {
-        dispatch(getProfile());
-        // dispatch(getUserProfilePic());
+        // dispatch(getProfile());
+        dispatch(getUserProfilePic());
     },[dispatch]);
 
     return(

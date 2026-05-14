@@ -219,6 +219,21 @@ export const updateProfilePic = createAsyncThunk(
             throw new Error("Something went wrong");
         }
     }
+);
+
+export const getUserProfile = createAsyncThunk(
+    "user/userProfile",
+    async()=>{
+        try{
+            const result = await axiosInstance.get("/user-profile");
+            return result;
+        }catch(error){
+            if(error instanceof Error){
+                throw new Error(error.message)
+            }
+            throw new Error("Something went wrong");
+        }
+    }
 )
 
 
@@ -251,7 +266,8 @@ const userReducer = createSlice({
             state.toast.type = null;
         },
         getUserProfilePic: (state) => {
-            const userData = JSON.parse(localStorage.getItem("userProfilePic") ?? "");
+            const userData = JSON.parse(localStorage.getItem("userData") ?? "");
+            console.log("UaesrDait is ", userData);
             state.userProfile = userData.userProfile;
         },
         setPage: (state,action)=>{
@@ -339,6 +355,7 @@ const userReducer = createSlice({
             }
         })
         .addCase(getProfile.fulfilled, (state, action)=>{
+            console.log("Profile data is ", action.payload);
             state.userProfileData = action.payload;
         })
         .addCase(getProfile.rejected, (state, action)=>{
@@ -365,7 +382,9 @@ const userReducer = createSlice({
             }
         })
         .addCase(updateProfilePic.fulfilled, (state,action)=>{
-            localStorage.setItem("userProfilePic", action.payload.data.user_profile_pic);
+            const user = JSON.parse(localStorage.getItem("userData") ?? "");
+            user.userProfile = action.payload.data.user_profile_pic;
+            localStorage.setItem("userData", JSON.stringify(user));
             state.toast = {
                 message: "Profile pic updated successfully",
                 type: "success"
