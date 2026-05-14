@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { clearToast, getProfile, getUserProfilePic, updateProfile, updateProfilePic } from '@/reducers/userReducer';
+import { clearToast, getProfile, getUserProfile, getUserProfilePic, updateProfile, updateProfilePic } from '@/reducers/userReducer';
 import React, { useEffect, useState } from 'react';
 import AvatarImg from '@/assets/images/avatar.webp';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
@@ -24,7 +24,7 @@ type UsersData = {
 
 const Profile = () => {
     const dispatch = useAppDispatch();
-    const userProfilePic = localStorage.getItem("userProfilePic") ?? "";
+    const userProfilePic = useAppSelector(state=> state.userReducer.userProfile);
     const userProfileData = useAppSelector(state=> state.userReducer.userProfileData);
     const toaster = useAppSelector(state=> state.userReducer.toast);
     const loading = useAppSelector(state=> state.userReducer.loading);
@@ -33,9 +33,9 @@ const Profile = () => {
     const [profilePic, setProfilePic] = useState("");
 
     useEffect(()=>{
+        dispatch(getUserProfilePic());
         dispatch(getProfile());
-    },[dispatch]);
-
+    },[]);
 
     useEffect(()=>{
         if(userProfileData){
@@ -52,12 +52,15 @@ const Profile = () => {
         dispatch(getProfile());
     }
 
-    const handleProfileChange =async (e) => {
-        console.log("user Profile Changed", e.target.files[0]);
+    const handleProfileChange =async (e:React.ChangeEvent<HTMLInputElement>) => {
+        console.log("user Profile Changed", e.target.files?.[0]);
         const formData = new FormData();
-        formData.append("profile_pic", e.target.files[0]);
+        const file = e.target.files?.[0];
+        if(!file) return;
+        formData.append("profile_pic", file);
 
         await dispatch(updateProfilePic(formData)).unwrap();
+        dispatch(getUserProfilePic());
     }
 
 
