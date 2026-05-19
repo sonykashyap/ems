@@ -53,7 +53,6 @@ const Profile = () => {
     }
 
     const handleProfileChange =async (e:React.ChangeEvent<HTMLInputElement>) => {
-        console.log("user Profile Changed", e.target.files?.[0]);
         const formData = new FormData();
         const file = e.target.files?.[0];
         if(!file) return;

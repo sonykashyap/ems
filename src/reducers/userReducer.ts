@@ -260,6 +260,7 @@ const userReducer = createSlice({
         LOGOUT(){
             localStorage.removeItem("token");
             localStorage.removeItem("role");
+            localStorage.removeItem("userProfilePic");
         },
         clearToast: (state) => {
             state.toast.message = null;
@@ -267,11 +268,9 @@ const userReducer = createSlice({
         },
         getUserProfilePic: (state) => {
             const userData = JSON.parse(localStorage.getItem("userData") ?? "");
-            console.log("UaesrDait is ", userData);
             state.userProfile = userData.userProfile;
         },
         setPage: (state,action)=>{
-            console.log("Page is ",action.payload);
             state.page = action.payload;
         },
         resetUserState: () => initialState,
@@ -391,7 +390,6 @@ const userReducer = createSlice({
             }
         })
         .addCase(updateProfilePic.rejected, (state,action)=>{
-            console.log("update Profile pic is ", action.payload);
             state.toast = {
                 message: "Failed to update profile pic",
                 type: "error"
