@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import userReducer, { clearToast, forgotPassword } from "@/reducers/userReducer";
 import {toast} from 'sonner';
 import { RootState } from "@/store";
+import { Mail } from "lucide-react";
 
 const ForgotPassword = () => {
     const dispatch = useAppDispatch();
@@ -60,27 +61,260 @@ const ForgotPassword = () => {
 
     return(
         <>
-            <div className="h-screen flex items-center justify-center">
-                <div className=" w-full mx-4 md:w-1/3 h-32 border rounded-xl border-black/10 mt-5 p-3">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div>
-                            <Input 
-                                className={`${errors.email && 'border border-red-500'}`}
-                                onChange={(e)=> setEmail(e.target.value)} 
-                                {...register("email")} 
-                                placeholder="Enter your email"
-                                />
-                            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-                        <button
-                            type="submit"
-                            className="self-end bg-blue-500 text-white rounded-lg py-2 px-3 text-sm mt-3">Reset Password
-                        </button>
-                        </div>
-                        
-                    </form>
-                </div>
-                
+            <div className="
+    min-h-screen
+
+    flex items-center justify-center
+
+    bg-gradient-to-br
+    from-[#f7f5ff]
+    via-white
+    to-[#fff2fc]
+
+    px-4
+">
+
+    {/* Background Blur */}
+    <div className="
+        absolute top-0 right-0
+
+        h-[350px] w-[350px]
+
+        rounded-full
+
+        bg-violet-300/20
+
+        blur-3xl
+    "></div>
+
+    <div className="
+        absolute bottom-0 left-0
+
+        h-[300px] w-[300px]
+
+        rounded-full
+
+        bg-fuchsia-300/20
+
+        blur-3xl
+    "></div>
+
+    {/* Card */}
+    <div className="
+        relative z-10
+
+        w-full
+        max-w-md
+
+        overflow-hidden
+
+        rounded-[32px]
+
+        border border-violet-100
+
+        bg-white/85
+
+        p-8
+
+        shadow-[0_20px_60px_rgba(139,92,246,0.12)]
+
+        backdrop-blur-2xl
+    ">
+
+        {/* Top Gradient */}
+        <div className="
+            absolute top-0 left-0 right-0
+
+            h-2
+
+            bg-gradient-to-r
+            from-violet-600
+            via-purple-500
+            to-fuchsia-500
+        "></div>
+
+        {/* Icon */}
+        <div className="
+            mx-auto
+
+            flex h-20 w-20 items-center justify-center
+
+            rounded-[28px]
+
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
+
+            shadow-[0_12px_35px_rgba(139,92,246,0.3)]
+        ">
+
+            <Mail className="text-white" size={34} />
+
+        </div>
+
+        {/* Heading */}
+        <div className="text-center mt-6">
+
+            <h1 className="
+                text-3xl
+                font-black
+
+                tracking-tight
+
+                bg-gradient-to-r
+                from-violet-700
+                to-fuchsia-500
+
+                bg-clip-text
+                text-transparent
+            ">
+                Forgot Password?
+            </h1>
+
+            <p className="
+                mt-3
+
+                text-sm
+                leading-relaxed
+
+                text-slate-500
+            ">
+                Enter your registered email address and we’ll send you a password reset link.
+            </p>
+
+        </div>
+
+        {/* Form */}
+        <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-8 space-y-5"
+        >
+
+            <div>
+
+                <label className="
+                    mb-2
+                    block
+
+                    text-sm
+                    font-semibold
+
+                    text-slate-700
+                ">
+                    Email Address
+                </label>
+
+                <Input
+                    className={`
+                        h-12
+
+                        rounded-2xl
+
+                        border
+
+                        bg-violet-50/40
+
+                        px-4
+
+                        shadow-sm
+
+                        transition-all duration-300
+
+                        focus-visible:ring-4
+                        focus-visible:ring-violet-100
+                        focus-visible:border-violet-400
+
+                        ${errors.email
+                            ? 'border-red-400 focus-visible:ring-red-100'
+                            : 'border-violet-100'
+                        }
+                    `}
+                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email")}
+                    placeholder="Enter your email"
+                />
+
+                {
+                    errors.email &&
+                    <p className="
+                        mt-2
+
+                        text-sm
+                        font-medium
+
+                        text-red-500
+                    ">
+                        {errors.email.message}
+                    </p>
+                }
+
             </div>
+
+            {/* Submit Button */}
+            <button
+                type="submit"
+                className="
+                    h-12
+                    w-full
+
+                    rounded-2xl
+
+                    bg-gradient-to-r
+                    from-violet-600
+                    via-purple-500
+                    to-fuchsia-500
+
+                    text-sm
+                    font-semibold
+                    text-white
+
+                    shadow-[0_12px_30px_rgba(139,92,246,0.25)]
+
+                    transition-all duration-300
+
+                    hover:scale-[1.02]
+                    hover:shadow-[0_18px_40px_rgba(139,92,246,0.35)]
+                "
+            >
+                Reset Password
+            </button>
+
+        </form>
+
+        {/* Footer */}
+        <div className="
+            mt-6
+
+            text-center
+
+            text-sm
+            text-slate-500
+        ">
+
+            Remember your password?
+
+            <button
+                type="button"
+                className="
+                    ml-2
+
+                    font-semibold
+
+                    text-violet-600
+
+                    transition-colors duration-300
+
+                    hover:text-fuchsia-500
+                "
+            >
+                Login
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
         </>
     )
 }
