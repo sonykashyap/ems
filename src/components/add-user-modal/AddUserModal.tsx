@@ -67,95 +67,418 @@ const AddUserModal = ({
     return(
         <>
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+
                 <Form {...form}>
-                    
-                    <DialogContent className=" md:max-w-xl">
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <DialogHeader>
-                            <DialogTitle></DialogTitle>
-                            <DialogDescription></DialogDescription>
-                        </DialogHeader>
-                        <div className="grid grid-cols-1">
-                            <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                
-                            )}
-                        />
+
+                    <DialogContent className="
+                        overflow-hidden
+
+                        border-0
+                        rounded-[32px]
+
+                        bg-white
+
+                        p-0
+
+                        shadow-[0_30px_80px_rgba(0,0,0,0.12)]
+
+                        md:max-w-2xl
+                    ">
+
+                        {/* Top Gradient Banner */}
+                        <div className="
+                            relative
+
+                            h-28
+
+                            bg-gradient-to-r
+                            from-violet-600
+                            via-purple-500
+                            to-fuchsia-500
+                        ">
+
+                            {/* Decorative Blur */}
+                            <div className="
+                                absolute -top-10 right-10
+
+                                h-40 w-40
+
+                                rounded-full
+
+                                bg-white/20
+
+                                blur-3xl
+                            "></div>
+
+                            {/* Icon */}
+                            <div className="
+                                absolute left-8 top-1/2
+
+                                flex h-20 w-20
+                                -translate-y-1/2
+
+                                items-center justify-center
+
+                                rounded-3xl
+
+                                border border-white/20
+
+                                bg-white/15
+
+                                backdrop-blur-xl
+
+                                shadow-xl
+                            ">
+
+                                <span className="text-4xl text-white">
+                                    👨‍💼
+                                </span>
+
+                            </div>
+
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
+
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="px-8 pb-8 pt-16"
+                        >
+
+                            {/* Header */}
+                            <DialogHeader className="mb-8 text-left">
+
+                                <DialogTitle className="
+                                    text-3xl
+                                    font-bold
+                                    tracking-tight
+                                    text-slate-900
+                                ">
+
+                                    {isEdit ? "Update Employee" : "Add New Employee"}
+
+                                </DialogTitle>
+
+                                <DialogDescription className="
+                                    mt-2
+                                    text-sm
+                                    text-slate-500
+                                ">
+
+                                    Manage employee information and assign roles professionally.
+
+                                </DialogDescription>
+
+                            </DialogHeader>
+
+                            {/* Form Fields */}
+                            <div className="space-y-6">
+
+                                {/* Name */}
                                 <FormField
                                     control={form.control}
-                                    name="email"
-                                    disabled={isEdit ? true : false}
+                                    name="name"
                                     render={({ field }) => (
+
                                         <FormItem>
-                                            <FormLabel className="mt-5">Email</FormLabel>
+
+                                            <FormLabel className="
+                                                text-sm
+                                                font-semibold
+                                                text-slate-700
+                                            ">
+                                                Full Name
+                                            </FormLabel>
+
                                             <FormControl>
-                                                <Input {...field} />
+
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter employee name"
+                                                    className="
+                                                        h-12
+
+                                                        rounded-2xl
+
+                                                        border-slate-200
+
+                                                        bg-slate-50/70
+
+                                                        px-4
+
+                                                        text-sm
+
+                                                        shadow-sm
+
+                                                        transition-all duration-300
+
+                                                        focus:border-violet-400
+                                                        focus:ring-4
+                                                        focus:ring-violet-100
+                                                    "
+                                                />
+
                                             </FormControl>
+
                                             <FormMessage />
+
                                         </FormItem>
-                                        
+
                                     )}
                                 />
-                            </div>
-                            <div>
-                                <FormField
-                                    control={form.control}
-                                    name="role"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="mt-5">Assign a Role to User</FormLabel>
-                                            <FormControl>
-                                                <Select onValueChange={field.onChange} value={field.value}>
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Select Role" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                        {/* <SelectItem value="admin">admin</SelectItem>
-                                                        <SelectItem value="user">User</SelectItem> */}
-                                                        {
-                                                            roles && roles.map(role=>{
-                                                                return <SelectItem 
-                                                                    key={role?._id} 
-                                                                    value={role._id}>{role?.name}
-                                                                </SelectItem>
-                                                            })
-                                                        }
-                                                        
-                                                        </SelectGroup>
-                                                    </SelectContent>
+
+                                {/* Email + Role */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                                    {/* Email */}
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        disabled={isEdit ? true : false}
+                                        render={({ field }) => (
+
+                                            <FormItem>
+
+                                                <FormLabel className="
+                                                    text-sm
+                                                    font-semibold
+                                                    text-slate-700
+                                                ">
+                                                    Email Address
+                                                </FormLabel>
+
+                                                <FormControl>
+
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="Enter email address"
+                                                        className="
+                                                            h-12
+
+                                                            rounded-2xl
+
+                                                            border-slate-200
+
+                                                            bg-slate-50/70
+
+                                                            px-4
+
+                                                            text-sm
+
+                                                            shadow-sm
+
+                                                            transition-all duration-300
+
+                                                            focus:border-violet-400
+                                                            focus:ring-4
+                                                            focus:ring-violet-100
+
+                                                            disabled:cursor-not-allowed
+                                                            disabled:bg-slate-100
+                                                        "
+                                                    />
+
+                                                </FormControl>
+
+                                                <FormMessage />
+
+                                            </FormItem>
+
+                                        )}
+                                    />
+
+                                    {/* Role */}
+                                    <FormField
+                                        control={form.control}
+                                        name="role"
+                                        render={({ field }) => (
+
+                                            <FormItem>
+
+                                                <FormLabel className="
+                                                    text-sm
+                                                    font-semibold
+                                                    text-slate-700
+                                                ">
+                                                    Assign Role
+                                                </FormLabel>
+
+                                                <FormControl>
+
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        value={field.value}
+                                                    >
+
+                                                        <SelectTrigger
+                                                            className="
+                                                                h-12
+
+                                                                rounded-2xl
+
+                                                                border-slate-200
+
+                                                                bg-slate-50/70
+
+                                                                px-4
+
+                                                                text-sm
+
+                                                                shadow-sm
+
+                                                                transition-all duration-300
+
+                                                                focus:ring-4
+                                                                focus:ring-violet-100
+                                                            "
+                                                        >
+
+                                                            <SelectValue placeholder="Select Role" />
+
+                                                        </SelectTrigger>
+
+                                                        <SelectContent className="
+                                                            rounded-2xl
+                                                            border-slate-200
+                                                            shadow-2xl
+                                                        ">
+
+                                                            <SelectGroup>
+
+                                                                {
+                                                                    roles && roles.map(role => {
+
+                                                                        return (
+                                                                            <SelectItem
+                                                                                key={role?._id}
+                                                                                value={role._id}
+                                                                                className="
+                                                                                    rounded-xl
+                                                                                    cursor-pointer
+                                                                                "
+                                                                            >
+                                                                                {role?.name}
+                                                                            </SelectItem>
+                                                                        )
+                                                                    })
+                                                                }
+
+                                                            </SelectGroup>
+
+                                                        </SelectContent>
+
                                                     </Select>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                
-                                    )}
-                                />
+
+                                                </FormControl>
+
+                                                <FormMessage />
+
+                                            </FormItem>
+
+                                        )}
+                                    />
+
+                                </div>
+
                             </div>
-                        </div>
-                        
-                        <DialogFooter className='mt-4'>
-                            <DialogClose asChild>
-                                <Button variant="outline" type="button" onClick={handleModalOpen}> Cancel </Button>
-                            </DialogClose>
-                            <Button type="submit" className="bg-violet-500"> {isEdit ? "Update" : "Add User"} </Button>
-                        </DialogFooter>
+
+                            {/* Footer */}
+                            <DialogFooter className="
+                                mt-10
+                                flex-col-reverse gap-3
+                                sm:flex-row
+                                sm:justify-end
+                            ">
+
+                                {/* Cancel */}
+                                <DialogClose asChild>
+
+                                    <Button
+                                        variant="outline"
+                                        type="button"
+                                        onClick={handleModalOpen}
+                                        className="
+                                            h-12
+
+                                            rounded-2xl
+
+                                            border border-violet-200
+
+                                            bg-white/80
+
+                                            px-6
+
+                                            font-medium
+                                            text-violet-700
+
+                                            shadow-sm
+
+                                            backdrop-blur-xl
+
+                                            transition-all duration-300
+
+                                            hover:bg-gradient-to-r
+                                            hover:from-violet-500
+                                            hover:to-fuchsia-500
+
+                                            hover:text-white
+
+                                            hover:border-transparent
+
+                                            hover:shadow-xl
+                                            hover:shadow-violet-500/20
+
+                                            hover:scale-[1.02]
+
+                                            focus-visible:ring-2
+                                            focus-visible:ring-violet-200
+                                        "
+                                    >
+
+                                        Cancel
+
+                                    </Button>
+
+                                </DialogClose>
+
+                                {/* Submit */}
+                                <Button
+                                    type="submit"
+                                    className="
+                                        h-12
+
+                                        rounded-2xl
+
+                                        bg-gradient-to-r
+                                        from-violet-600
+                                        via-purple-500
+                                        to-fuchsia-500
+
+                                        px-7
+
+                                        text-white
+
+                                        shadow-lg
+                                        shadow-violet-500/20
+
+                                        transition-all duration-300
+
+                                        hover:scale-[1.02]
+                                        hover:shadow-2xl
+                                        hover:shadow-violet-500/30
+                                    "
+                                >
+
+                                    {isEdit ? "Update Employee" : "Add Employee"}
+
+                                </Button>
+
+                            </DialogFooter>
+
                         </form>
+
                     </DialogContent>
-                    
+
                 </Form>
+
             </Dialog>
         </>
     )

@@ -81,71 +81,133 @@ const Signup = () =>{
 
   return(
       <>
-        <div className='container mx-auto h-screen flex justify-center items-center'>
-            <Card className="w-full max-w-sm">
-                <form action={submitForm}>
-                <CardHeader>
-                    <CardTitle>Signup</CardTitle>
-                    
-                    <CardAction>
-                        {/* <Button type="button" variant="link" >Login</Button> */}
-                    </CardAction>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col gap-6">
-                        <div className="grid gap-2">
-                          {/* <Label htmlFor="email">Email</Label> */}
-                          <Input
-                            id="email"
-                            type="text"
-                            name='email'
-                            placeholder="Email"
-                            className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
-                          
-                          />
-                          {state.error && <p className='text-red-400 bg-red-100'> {state.error} </p>}
-                        </div>
-                        <div className="grid gap-2">
-                          <div className="flex items-center">
-                              {/* <Label htmlFor="password">Password</Label> */}
-                          </div>
-                          <Input 
-                            id="password" 
-                            type="password" 
-                            name='password' 
-                            placeholder='Password'
-                            className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'  
-                          />
-                          {state.passwordError && <p className='text-sm text-red-400 bg-red-100'> {state.passwordError} </p>}
-                        </div>
-                        <div className="grid gap-2">
-                          <Input
-                            id="name"
-                            type="text"
-                            name='name'
-                            placeholder="Your name"
-                            className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
-                          
-                          />
-                          {state.errorName && <p className='text-red-400 bg-red-100'> {state.errorName} </p>}
-                        </div>
-                    </div>
-                    
-                </CardContent>
-                <CardFooter className="flex-col gap-2 mt-4">
-                    <Button type="submit" className="w-full" disabled={isPending}>
-                    {isPending ? "Signing In..." : "Signup"}
-                    </Button>
-                    <Button
-                      onClick={()=> navigate('/login')}
-                      variant="outline"
-                      className='w-full text-purple-400'>
-                      Login
-                    </Button>
-                </CardFooter>
-                </form>
-            </Card>
-        </div>          
+        <div className="min-h-screen bg-gradient-to-br from-violet-100 via-white to-fuchsia-100 flex items-center justify-center px-4 py-8 overflow-hidden relative">
+
+  {/* Background Blur Effects */}
+  <div className="absolute top-0 left-0 w-72 h-72 bg-violet-300/30 rounded-full blur-3xl"></div>
+  <div className="absolute bottom-0 right-0 w-72 h-72 bg-fuchsia-300/30 rounded-full blur-3xl"></div>
+
+  <Card className="relative z-10 w-full max-w-md border-0 rounded-3xl shadow-[0_20px_80px_rgba(124,58,237,0.15)] backdrop-blur-xl bg-white/90 overflow-hidden">
+
+    <form action={submitForm}>
+
+      {/* Header */}
+      <CardHeader className="text-center pt-10 pb-6 space-y-4">
+
+        {/* Logo */}
+        <div className="mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-500 flex items-center justify-center shadow-xl">
+          <h1 className="text-2xl font-extrabold tracking-wide text-white">
+            EMS
+          </h1>
+        </div>
+
+        <div className="space-y-2">
+          <CardTitle className="text-4xl font-extrabold bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent">
+            Create Account
+          </CardTitle>
+
+          <p className="text-sm text-gray-500">
+            Join us and start your journey today
+          </p>
+        </div>
+
+      </CardHeader>
+
+      {/* Form */}
+      <CardContent className="space-y-5 px-8">
+
+        {/* Name */}
+        <div className="space-y-2">
+          <div className="relative">
+
+            <Input
+              id="name"
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              className="h-12 rounded-2xl border border-gray-200 bg-white/70 pl-4 shadow-sm focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-500 transition-all"
+            />
+
+          </div>
+
+          {state.errorName && (
+            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-xl border border-red-100">
+              {state.errorName}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div className="space-y-2">
+
+          <Input
+            id="email"
+            type="text"
+            name="email"
+            placeholder="Email Address"
+            className="h-12 rounded-2xl border border-gray-200 bg-white/70 shadow-sm focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-500 transition-all"
+          />
+
+          {state.error && (
+            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-xl border border-red-100">
+              {state.error}
+            </p>
+          )}
+        </div>
+
+        {/* Password */}
+        <div className="space-y-2 relative">
+
+          <Input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Create Password"
+            className="h-12 rounded-2xl border border-gray-200 bg-white/70 shadow-sm focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-500 transition-all"
+          />
+
+          {state.passwordError && (
+            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-xl border border-red-100">
+              {state.passwordError}
+            </p>
+          )}
+
+        </div>
+
+      </CardContent>
+
+      {/* Footer */}
+      <CardFooter className="flex flex-col gap-4 px-8 pb-10 pt-6">
+
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full h-12 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-500 hover:from-violet-700 hover:to-fuchsia-600 text-white font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02]"
+        >
+          {isPending ? "Creating Account..." : "Create Account"}
+        </Button>
+
+        <div className="flex items-center gap-2 w-full">
+          <div className="h-px bg-gray-200 flex-1"></div>
+          <span className="text-xs text-gray-400 uppercase">
+            Already have an account?
+          </span>
+          <div className="h-px bg-gray-200 flex-1"></div>
+        </div>
+
+        <Button
+          type="button"
+          onClick={() => navigate('/login')}
+          variant="outline"
+          className="w-full h-12 rounded-2xl border-gray-200 hover:bg-violet-50 hover:border-violet-300 text-violet-600 font-semibold transition-all"
+        >
+          Login Instead
+        </Button>
+
+      </CardFooter>
+    </form>
+  </Card>
+</div>      
       </>
   )
 }
