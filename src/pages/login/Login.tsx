@@ -104,72 +104,167 @@ const loginWithGoogle = () => {
 
   return(
     <>
-      <div className='container mx-auto h-screen flex justify-center items-center'>
-        <Card className="w-full max-w-sm">
-          <form action={submitForm}>
-            <CardHeader>
-              <CardTitle>Login to your account</CardTitle>
-              <CardAction>
-                <Button type="button" variant="link" onClick={()=> navigate('/signup')}>Sign Up</Button>
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-6">
-                  <div className="grid gap-2">
-                    {/* <Label htmlFor="email">Email</Label> */}
-                    <Input
-                      id="email"
-                      type="text"
-                      name='email'
-                      placeholder='Email'
-                      className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
-                    />
-                    {state.error && <p className='text-red-500'> {state.error} </p> }
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                        {/* <Label htmlFor="password">Password</Label> */}
-                        <a
-                        href="forgot-password"
-                        className="ml-auto inline-block text-xs underline-offset-4 hover:underline"
-                        >
-                        Forgot your password?
-                        </a>
-                    </div>
-                    <div className='relative'>
-                      <Input 
-                        tabIndex={0} 
-                        placeholder='Password' 
-                        id="password" 
-                        type={showPassword ? 'text' : 'password'} 
-                        name='password'
-                        className='rounded-none focus:outline-none focus-visible:ring-0 focus-visible:border-color-none'
-                      />
-                      <span className='text-xs absolute top-2 right-2 hover:cursor-pointer'>
-                        {showPassword ? 
-                          <Eye onClick={()=> setShowPassword(!showPassword)} /> : 
-                          <EyeOff size="16" onClick={()=> setShowPassword(!showPassword)} />
-                        }
-                      </span>
-                    </div>
-                  
-                    {state.passwordError && <p className='text-red-500'> {state.passwordError} </p>}
-                  </div>
-              </div>
-              {/* {state.email && <p> {state.email} </p>} */}
-            </CardContent>
-            <CardFooter className="flex-col gap-2 mt-4">
-                <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Logging In..." : "Login"}
-                </Button>
-                <Button type="button" onClick={loginWithGoogle} variant="outline" className="w-full">
-                  Login with Google
-                </Button>
-                
-            </CardFooter>
-          </form>
-        </Card>
-      </div>
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-violet-100 flex items-center justify-center px-4">
+  <Card className="w-full max-w-md border-0 shadow-2xl rounded-3xl overflow-hidden">
+    
+    <form action={submitForm}>
+      
+      {/* Header */}
+      <CardHeader className="space-y-2 pb-6 pt-8 text-center relative">
+        
+        <div className="absolute right-6 top-6">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => navigate('/signup')}
+            className="text-violet-600 hover:text-violet-700 hover:bg-violet-50 rounded-full"
+          >
+            Sign Up
+          </Button>
+        </div>
+
+        {/* Logo */}
+        <div className="mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-500 flex items-center justify-center shadow-xl">
+          <h1 className="text-2xl font-extrabold tracking-wide text-white">
+            EMS
+          </h1>
+        </div>
+
+        <div className="space-y-1">
+          <CardTitle className="text-3xl font-bold text-gray-800">
+            Welcome Back
+          </CardTitle>
+
+          <p className="text-sm text-gray-500">
+            Login to continue to your account
+          </p>
+        </div>
+      </CardHeader>
+
+      {/* Content */}
+      <CardContent className="space-y-5 px-8">
+
+        {/* Email */}
+        <div className="space-y-2">
+          <Input
+            id="email"
+            type="text"
+            name="email"
+            placeholder="Enter your email"
+            className="h-12 rounded-xl border-gray-200 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-500 shadow-sm"
+          />
+
+          {state.error && (
+            <p className="text-sm text-red-500">
+              {state.error}
+            </p>
+          )}
+        </div>
+
+        {/* Password */}
+        <div className="space-y-2">
+
+          <div className="flex items-center justify-end">
+            <a
+              href="forgot-password"
+              className="text-sm text-violet-600 hover:text-violet-700 hover:underline"
+            >
+              Forgot Password?
+            </a>
+          </div>
+
+          <div className="relative">
+            <Input
+              tabIndex={0}
+              placeholder="Enter your password"
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              className="h-12 rounded-xl border-gray-200 pr-12 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-500 shadow-sm"
+            />
+
+            <button
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-violet-600 transition"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <Eye size={18} />
+              ) : (
+                <EyeOff size={18} />
+              )}
+            </button>
+          </div>
+
+          {state.passwordError && (
+            <p className="text-sm text-red-500">
+              {state.passwordError}
+            </p>
+          )}
+        </div>
+      </CardContent>
+
+      {/* Footer */}
+      <CardFooter className="flex flex-col gap-4 px-8 pb-8 pt-6">
+
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full h-12 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium shadow-lg transition-all duration-200"
+        >
+          {isPending ? "Logging In..." : "Login"}
+        </Button>
+
+        <div className="relative w-full">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200"></span>
+          </div>
+
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-3 text-gray-400">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <Button
+          type="button"
+          onClick={loginWithGoogle}
+          variant="outline"
+          className="w-full h-12 rounded-xl border-gray-200 hover:bg-gray-50 font-medium"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className="mr-2"
+          >
+            <path
+              fill="#FFC107"
+              d="M43.6 20.5H42V20H24v8h11.3C33.6 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12S17.4 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"
+            />
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.7 16 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
+            />
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.2 0 10-2 13.5-5.3l-6.2-5.2C29.3 35.1 26.8 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.5 16.2 44 24 44z"
+            />
+            <path
+              fill="#1976D2"
+              d="M43.6 20.5H42V20H24v8h11.3c-1.1 3.1-3.3 5.5-6 7.1l6.2 5.2C39.2 36.7 44 31 44 24c0-1.3-.1-2.3-.4-3.5z"
+            />
+          </svg>
+
+          Login with Google
+        </Button>
+
+      </CardFooter>
+    </form>
+  </Card>
+</div>
     </>
   )
 }

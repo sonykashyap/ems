@@ -72,16 +72,78 @@ const User = () =>{
         )
       }
     },
-    {
+   {
       accessorKey: "status",
       header: "Status",
-      cell:  ({row}) => {
+
+      cell: ({ row }) => {
+
         const status = "Active" as string
+
         return (
-          <span 
-            className={`text-white p-1 text-sm rounded-sm 
-            ${status === "Active" ? "bg-violet-400" : "bg-red-400"} 
-          `}> Active </span>
+
+          <div className="flex items-center">
+
+            <span
+              className={`
+                inline-flex items-center gap-2
+
+                rounded-full
+
+                px-4 py-1.5
+
+                text-xs font-semibold
+                tracking-wide
+
+                shadow-sm
+
+                transition-all duration-300
+
+                ${
+                  status === "Active"
+                    ? `
+                      bg-gradient-to-r
+                      from-emerald-500
+                      to-green-400
+
+                      text-white
+
+                      shadow-emerald-200
+                    `
+                    : `
+                      bg-gradient-to-r
+                      from-red-500
+                      to-rose-400
+
+                      text-white
+
+                      shadow-red-200
+                    `
+                }
+              `}
+            >
+
+              {/* Status Dot */}
+              <span
+                className={`
+                  h-2.5 w-2.5
+                  rounded-full
+                  animate-pulse
+
+                  ${
+                    status === "Active"
+                      ? 'bg-white'
+                      : 'bg-white'
+                  }
+                `}
+              />
+
+              {status}
+
+            </span>
+
+          </div>
+
         )
       }
     },
@@ -204,7 +266,7 @@ const editUserhandler = (values) => {
 
     return(
       <>
-        <div className='flex justify-between mb-2'>
+        {/* <div className='flex justify-between mb-2'>
           <h1 className='text-violet-500 text-2xl'>Employees</h1>
           <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
         </div>
@@ -245,7 +307,260 @@ const editUserhandler = (values) => {
             setIsEdit={setIsEdit} 
             userEditData={userEditData} 
             editUserhandler={editUserhandler} 
-          />  }
+          />  } */}
+          <div className="space-y-6">
+
+    {/* Header */}
+    <div
+        className="flex flex-col lg:flex-row lg:items-center 
+        lg:justify-between gap-4"
+    >
+        <div>
+            <h1 className="text-3xl font-bold text-gray-800">
+                Employees
+            </h1>
+
+            <p className="text-gray-500 mt-1">
+                Manage employees, roles and account information
+            </p>
+        </div>
+
+        <Button
+            onClick={() => setIsModalOpen(true)}
+            className="h-12 px-6 rounded-2xl bg-gradient-to-r 
+            from-blue-600 to-indigo-600 text-white font-semibold
+            shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+            <UserPlus className="mr-2 h-5 w-5" />
+            Add Employee
+        </Button>
+    </div>
+
+    {/* Stats */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+        <div
+            className="bg-white rounded-3xl border border-black/5 
+            shadow-lg p-5"
+        >
+            <div className="flex items-center justify-between">
+                <div>
+                    <p className="text-sm text-gray-500">
+                        Total Employees
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                        {data?.length || 0}
+                    </h2>
+                </div>
+
+                <div
+                    className="h-14 w-14 rounded-2xl bg-blue-100 
+                    flex items-center justify-center text-2xl"
+                >
+                    👨‍💼
+                </div>
+            </div>
+        </div>
+
+        <div
+            className="bg-white rounded-3xl border border-black/5 
+            shadow-lg p-5"
+        >
+            <div className="flex items-center justify-between">
+                <div>
+                    <p className="text-sm text-gray-500">
+                        Active Users
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-green-600 mt-2">
+                        {data?.length || 0}
+                    </h2>
+                </div>
+
+                <div
+                    className="h-14 w-14 rounded-2xl bg-green-100 
+                    flex items-center justify-center text-2xl"
+                >
+                    ✅
+                </div>
+            </div>
+        </div>
+
+        <div
+            className="bg-white rounded-3xl border border-black/5 
+            shadow-lg p-5"
+        >
+            <div className="flex items-center justify-between">
+                <div>
+                    <p className="text-sm text-gray-500">
+                        Departments
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-purple-600 mt-2">
+                        08
+                    </h2>
+                </div>
+
+                <div
+                    className="h-14 w-14 rounded-2xl bg-purple-100 
+                    flex items-center justify-center text-2xl"
+                >
+                    🏢
+                </div>
+            </div>
+        </div>
+
+        <div
+            className="bg-white rounded-3xl border border-black/5 
+            shadow-lg p-5"
+        >
+            <div className="flex items-center justify-between">
+                <div>
+                    <p className="text-sm text-gray-500">
+                        New This Month
+                    </p>
+
+                    <h2 className="text-3xl font-bold text-orange-500 mt-2">
+                        12
+                    </h2>
+                </div>
+
+                <div
+                    className="h-14 w-14 rounded-2xl bg-orange-100 
+                    flex items-center justify-center text-2xl"
+                >
+                    🚀
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* Main Table Card */}
+    <div
+        className="bg-white rounded-3xl border border-black/5 
+        shadow-xl overflow-hidden"
+    >
+
+        {/* Top Actions */}
+        <div
+            className="p-6 border-b border-gray-100 
+            flex flex-col lg:flex-row lg:items-center 
+            lg:justify-between gap-4"
+        >
+
+            {/* Search */}
+            <div className="relative w-full lg:max-w-md">
+                <Input
+                    value={search}
+                    placeholder="Search by name, email or role"
+                    className="bg-gray-50 border-gray-200 rounded-2xl 
+                    h-12 pl-4 focus-visible:ring-4 focus-visible:ring-blue-100"
+                    onChange={(e) => {
+                        setSearch(e.target.value);
+                    }}
+                />
+            </div>
+
+            {/* Right Filters */}
+            <div className="flex flex-wrap gap-3">
+
+                <select
+                    className="h-12 px-4 rounded-2xl border border-gray-200 
+                    bg-gray-50 text-sm outline-none"
+                >
+                    <option>All Roles</option>
+                    <option>Admin</option>
+                    <option>Employee</option>
+                </select>
+
+                <select
+                    className="h-12 px-4 rounded-2xl border border-gray-200 
+                    bg-gray-50 text-sm outline-none"
+                >
+                    <option>Status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                </select>
+            </div>
+        </div>
+
+        {/* Table */}
+        <div className="p-4">
+
+            {
+                isLoading ?
+
+                    <div className="flex items-center justify-center py-20">
+                        <div
+                            className="flex flex-col items-center gap-4"
+                        >
+                            <Spinner className="size-8 text-blue-600" />
+
+                            <p className="text-sm text-gray-500">
+                                Loading employees...
+                            </p>
+                        </div>
+                    </div>
+
+                    :
+
+                    <div
+                        className="rounded-2xl border border-gray-100 overflow-hidden"
+                    >
+                        <DataTable
+                            columns={columns}
+                            data={filterData.length > 0 ? filterData : data}
+                            newlyAddedUserId={lastAddedUserId}
+                        />
+                    </div>
+            }
+        </div>
+
+        {/* Footer */}
+        <div
+            className="px-6 py-4 border-t border-gray-100 
+            flex flex-col md:flex-row md:items-center 
+            md:justify-between gap-3"
+        >
+            <p className="text-sm text-gray-500">
+                Showing{" "}
+                <span className="font-semibold text-gray-700">
+                    {(filterData.length > 0 ? filterData : data)?.length || 0}
+                </span>{" "}
+                employees
+            </p>
+        </div>
+    </div>
+
+    {/* Delete Dialog */}
+    {
+        openDialog && (
+            <AlertDialogComponent
+                isOpen={openDialog}
+                id={id}
+                setOpenDialog={setOpenDialog}
+                deleteMethod={deleteRoleHandler}
+                message="Are you sure, you want to delete this?"
+            />
+        )
+    }
+
+    {/* Add/Edit Modal */}
+    {
+        isModalOpen && (
+            <AddUserModal
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                addNewUser={addNewUser}
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                userEditData={userEditData}
+                editUserhandler={editUserhandler}
+            />
+        )
+    }
+</div>
       </>
     )
 }
