@@ -107,21 +107,21 @@ const Event = () => {
 
 
     useEffect(() => {
-    if (!toaster.message) return;
-    
-    toast(toaster.message, {
-        classNames: {
-        toast:
-            toaster.type === "success"
-            ? "!bg-green-200"
-            : "!bg-red-200",
-        title:
-            toaster.type === "success"
-            ? "!text-green-600 font-bold"
-            : "!text-red-600 font-bold",
-        },
-    });
-    dispatch(clearToast());
+        if (!toaster.message) return;
+        
+        toast(toaster.message, {
+            classNames: {
+            toast:
+                toaster.type === "success"
+                ? "!bg-green-200"
+                : "!bg-red-200",
+            title:
+                toaster.type === "success"
+                ? "!text-green-600 font-bold"
+                : "!text-red-600 font-bold",
+            },
+        });
+        dispatch(clearToast());
     }, [toaster]);
 
     useEffect(()=>{

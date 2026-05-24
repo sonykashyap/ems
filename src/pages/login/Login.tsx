@@ -210,9 +210,38 @@ const loginWithGoogle = () => {
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full h-12 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-medium shadow-lg transition-all duration-200"
+          className="
+            w-full
+            h-12
+
+            rounded-2xl
+
+            bg-gradient-to-r
+            from-violet-600
+            via-purple-500
+            to-fuchsia-500
+
+            text-white
+            font-semibold
+
+            shadow-[0_12px_30px_rgba(139,92,246,0.25)]
+
+            transition-all duration-300
+
+            hover:from-violet-700
+            hover:via-purple-600
+            hover:to-fuchsia-600
+
+            hover:shadow-[0_18px_40px_rgba(139,92,246,0.35)]
+
+            hover:scale-[1.02]
+
+            disabled:opacity-70
+            disabled:cursor-not-allowed
+            disabled:hover:scale-100
+          "
         >
-          {isPending ? "Logging In..." : "Login"}
+  {isPending ? "Logging In..." : "Login"}
         </Button>
 
         <div className="relative w-full">

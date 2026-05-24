@@ -8,6 +8,7 @@ import userReducer, { clearToast, forgotPassword } from "@/reducers/userReducer"
 import {toast} from 'sonner';
 import { RootState } from "@/store";
 import { Mail } from "lucide-react";
+import { Link } from "react-router";
 
 const ForgotPassword = () => {
     const dispatch = useAppDispatch();
@@ -293,22 +294,18 @@ const ForgotPassword = () => {
 
             Remember your password?
 
-            <button
-                type="button"
+            <Link
+                to="/login"
                 className="
                     ml-2
-
                     font-semibold
-
                     text-violet-600
-
                     transition-colors duration-300
-
                     hover:text-fuchsia-500
                 "
             >
                 Login
-            </button>
+            </Link>
 
         </div>
 
