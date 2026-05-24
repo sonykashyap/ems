@@ -1,6 +1,85 @@
-import React from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks';
+import { applyLeave } from '@/reducers/leavesReducer';
+import { clearToast } from '@/reducers/userReducer';
+import { e164 } from 'node_modules/zod/v4/core/regexes.cjs';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import z from 'zod';
+
+export const employeeSchema = z.object({
+    leaveType: z.string().min(2, "Name must be at least 2 characters"),
+    totalDays: z.string().email("Invalid email address"),
+    role: z.string().min(1, "Role is required"),
+    age: z.number({ invalid_type_error: "Age must be a number" })
+        .min(18, "Minimum age is 18"),
+    isActive: z.boolean().optional(),
+});
+
+type leaveType = {
+    leaveType: string;
+    totalDays: number;
+    startDate: string;
+    endDate: string;
+    reasonForLeave: string;
+    attachment: File | null;
+}
+
 
 const Leave = () =>{
+
+    const dispatch = useAppDispatch();
+    const toaster = useAppSelector(state=> state.leaveReducer.toast);
+    const [leaves, setLeaves] = useState<leaveType>({
+        leaveType: "",
+        totalDays:0,
+        startDate: "",
+        endDate: "",
+        reasonForLeave: "",
+        attachment: null
+    });
+
+
+    const handleChange = (field: string, value:any) =>{
+        setLeaves(prev=>({
+            ...prev, [field]: value
+        }))
+    }
+
+    useEffect(() => {
+        if (!toaster.message) return;
+        
+        toast(toaster.message, {
+            classNames: {
+            toast:
+                toaster.type === "success"
+                ? "!bg-green-200"
+                : "!bg-red-200",
+            title:
+                toaster.type === "success"
+                ? "!text-green-600 font-bold"
+                : "!text-red-600 font-bold",
+            },
+        });
+        dispatch(clearToast());
+    }, [toaster]);
+
+    const handleSubmit = () => {
+        console.log("Submit called");
+        const user = JSON.parse(localStorage.getItem("userData") ?? "");
+        const formData = new FormData();
+        formData.append("leave_type", leaves.leaveType);
+        formData.append("total_days", String(leaves.totalDays));
+        formData.append("start_date", leaves.startDate);
+        formData.append("end_date", leaves.endDate);
+        formData.append("reason_for_leave", leaves.reasonForLeave);
+        formData.append("user_id", user.id);
+        
+        if (leaves.attachment) {
+            formData.append("attachment", leaves.attachment);
+        }
+        dispatch(applyLeave(formData));
+    }
+
     return(
         <>
             <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-6">
@@ -59,12 +138,14 @@ const Leave = () =>{
                                         className="w-full h-14 rounded-2xl border border-gray-200 
                                         bg-gray-50 px-4 outline-none transition-all duration-300
                                         focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                        onChange={(e)=>handleChange("leaveType", e.target.value)}
                                     >
                                         <option>Select Leave Type</option>
                                         <option>Casual Leave</option>
                                         <option>Sick Leave</option>
                                         <option>Paid Leave</option>
                                         <option>Emergency Leave</option>
+                                        <option>RH</option>
                                     </select>
                                 </div>
 
@@ -80,6 +161,7 @@ const Leave = () =>{
                                         className="w-full h-14 rounded-2xl border border-gray-200 
                                         bg-gray-50 px-4 outline-none transition-all duration-300
                                         focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                        onChange={(e)=>handleChange("totalDays", e.target.value)}
                                     />
                                 </div>
 
@@ -94,6 +176,7 @@ const Leave = () =>{
                                         className="w-full h-14 rounded-2xl border border-gray-200 
                                         bg-gray-50 px-4 outline-none transition-all duration-300
                                         focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                        onChange={(e)=> handleChange("startDate",e.target.value)}
                                     />
                                 </div>
 
@@ -108,6 +191,7 @@ const Leave = () =>{
                                         className="w-full h-14 rounded-2xl border border-gray-200 
                                         bg-gray-50 px-4 outline-none transition-all duration-300
                                         focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                        onChange={(e)=> handleChange("endDate",e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -125,6 +209,7 @@ const Leave = () =>{
                                     bg-gray-50 p-4 outline-none resize-none
                                     transition-all duration-300
                                     focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                    onChange={(e)=> handleChange("reasonForLeave", e.target.value) }
                                 />
                             </div>
 
@@ -146,6 +231,7 @@ const Leave = () =>{
                                     <input
                                         type="file"
                                         className="mt-4"
+                                        onChange={(e)=> handleChange("attachment", e.target.files?.[0]) }
                                     />
                                 </div>
                             </div>
@@ -165,6 +251,7 @@ const Leave = () =>{
                                     from-blue-600 to-indigo-600 text-white font-semibold
                                     shadow-lg hover:shadow-xl hover:scale-[1.01]
                                     transition-all duration-300"
+                                    onClick={handleSubmit}
                                 >
                                     Submit Leave Request
                                 </button>
@@ -181,8 +268,7 @@ const Leave = () =>{
                                 Leave Balance
                             </h3>
 
-                            <div className="space-y-4">
-
+                           <div className="space-y-4">
                                 <div
                                     className="flex items-center justify-between 
                                     p-4 rounded-2xl bg-blue-50"
@@ -248,6 +334,53 @@ const Leave = () =>{
                                         ✈️
                                     </div>
                                 </div>
+
+                                {/* RH Leave */}
+                                <div
+                                    className="flex items-center justify-between 
+                                    p-4 rounded-2xl bg-orange-50"
+                                >
+                                    <div>
+                                        <p className="text-sm text-gray-500">
+                                            RH Leave
+                                        </p>
+
+                                        <h4 className="text-xl font-bold text-orange-700">
+                                            02
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        className="h-12 w-12 rounded-xl bg-orange-100 
+                                        flex items-center justify-center"
+                                    >
+                                        🎉
+                                    </div>
+                                </div>
+
+                                {/* WFH */}
+                                <div
+                                    className="flex items-center justify-between 
+                                    p-4 rounded-2xl bg-cyan-50"
+                                >
+                                    <div>
+                                        <p className="text-sm text-gray-500">
+                                            Work From Home
+                                        </p>
+
+                                        <h4 className="text-xl font-bold text-cyan-700">
+                                            10
+                                        </h4>
+                                    </div>
+
+                                    <div
+                                        className="h-12 w-12 rounded-xl bg-cyan-100 
+                                        flex items-center justify-center"
+                                    >
+                                        💻
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
