@@ -26,6 +26,7 @@ const formSchema = z.object({
     name: z.string(),
     email: z.email(),
     role: z.string(),
+    reporting_to: z.string(),
     userId: z.string().nullable().optional()
 });
 const AddUserModal = ({
@@ -51,12 +52,14 @@ const AddUserModal = ({
             name: !isEdit ? "" : userEditData.name,
             email: !isEdit ? "" : userEditData?.email,
             role: !isEdit ? "" : userEditData.roleId._id,
+            reporting_to: !isEdit? "" : userEditData.reporting_to,
             userId: !isEdit ? null : userEditData._id,
         },
     });
 
     
     const onSubmit =  (values: z.infer<typeof formSchema>) => {
+        console.log("Values from form: ", values);
         !isEdit ? addNewUser(values) : editUserhandler(values);
     }
 
@@ -225,65 +228,65 @@ const AddUserModal = ({
                                     )}
                                 />
 
-                                {/* Email + Role */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {/* Email - Full Width */}
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    disabled={isEdit ? true : false}
+                                    render={({ field }) => (
 
-                                    {/* Email */}
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        disabled={isEdit ? true : false}
-                                        render={({ field }) => (
+                                        <FormItem>
 
-                                            <FormItem>
+                                            <FormLabel className="
+                                                text-sm
+                                                font-semibold
+                                                text-slate-700
+                                            ">
+                                                Email Address
+                                            </FormLabel>
 
-                                                <FormLabel className="
-                                                    text-sm
-                                                    font-semibold
-                                                    text-slate-700
-                                                ">
-                                                    Email Address
-                                                </FormLabel>
+                                            <FormControl>
 
-                                                <FormControl>
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter email address"
+                                                    className="
+                                                        h-12
 
-                                                    <Input
-                                                        {...field}
-                                                        placeholder="Enter email address"
-                                                        className="
-                                                            h-12
+                                                        rounded-2xl
 
-                                                            rounded-2xl
+                                                        border-slate-200
 
-                                                            border-slate-200
+                                                        bg-slate-50/70
 
-                                                            bg-slate-50/70
+                                                        px-4
 
-                                                            px-4
+                                                        text-sm
 
-                                                            text-sm
+                                                        shadow-sm
 
-                                                            shadow-sm
+                                                        transition-all duration-300
 
-                                                            transition-all duration-300
+                                                        focus:border-violet-400
+                                                        focus:ring-4
+                                                        focus:ring-violet-100
 
-                                                            focus:border-violet-400
-                                                            focus:ring-4
-                                                            focus:ring-violet-100
+                                                        disabled:cursor-not-allowed
+                                                        disabled:bg-slate-100
+                                                    "
+                                                />
 
-                                                            disabled:cursor-not-allowed
-                                                            disabled:bg-slate-100
-                                                        "
-                                                    />
+                                            </FormControl>
 
-                                                </FormControl>
+                                            <FormMessage />
 
-                                                <FormMessage />
+                                        </FormItem>
 
-                                            </FormItem>
+                                    )}
+                                />
 
-                                        )}
-                                    />
+                                {/* Role + Manager */}
+                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
 
                                     {/* Role */}
                                     <FormField
@@ -310,6 +313,8 @@ const AddUserModal = ({
 
                                                         <SelectTrigger
                                                             className="
+                                                                w-full
+
                                                                 h-12
 
                                                                 rounded-2xl
@@ -376,6 +381,108 @@ const AddUserModal = ({
                                         )}
                                     />
 
+                                    {/* Manager */}
+                                    <FormField
+                                        control={form.control}
+                                        name="reporting_to"
+                                        render={({ field }) => (
+
+                                            <FormItem>
+
+                                                <FormLabel className="
+                                                    text-sm
+                                                    font-semibold
+                                                    text-slate-700
+                                                ">
+                                                    Reporting Manager
+                                                </FormLabel>
+
+                                                <FormControl>
+
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        value={field.value}
+                                                    >
+
+                                                        <SelectTrigger
+                                                            className="
+                                                                w-full
+
+                                                                h-12
+
+                                                                rounded-2xl
+
+                                                                border-slate-200
+
+                                                                bg-slate-50/70
+
+                                                                px-4
+
+                                                                text-sm
+
+                                                                shadow-sm
+
+                                                                transition-all duration-300
+
+                                                                focus:ring-4
+                                                                focus:ring-violet-100
+                                                            "
+                                                        >
+
+                                                            <SelectValue placeholder="Select Manager" />
+
+                                                        </SelectTrigger>
+
+                                                        <SelectContent className="
+                                                            rounded-2xl
+                                                            border-slate-200
+                                                            shadow-2xl
+                                                        ">
+
+                                                            <SelectGroup>
+
+                                                                <SelectItem
+                                                                    value="rahul-sharma"
+                                                                    className="rounded-xl cursor-pointer"
+                                                                >
+                                                                    Rahul Sharma
+                                                                </SelectItem>
+
+                                                                <SelectItem
+                                                                    value="amit-verma"
+                                                                    className="rounded-xl cursor-pointer"
+                                                                >
+                                                                    Amit Verma
+                                                                </SelectItem>
+
+                                                                <SelectItem
+                                                                    value="neha-kapoor"
+                                                                    className="rounded-xl cursor-pointer"
+                                                                >
+                                                                    Neha Kapoor
+                                                                </SelectItem>
+
+                                                                <SelectItem
+                                                                    value="priya-singh"
+                                                                    className="rounded-xl cursor-pointer"
+                                                                >
+                                                                    Priya Singh
+                                                                </SelectItem>
+
+                                                            </SelectGroup>
+
+                                                        </SelectContent>
+
+                                                    </Select>
+
+                                                </FormControl>
+
+                                                <FormMessage />
+
+                                            </FormItem>
+
+                                        )}
+                                    />
                                 </div>
 
                             </div>

@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from '@/components/data-table/Datatable';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, UserPlus } from "lucide-react";
+import { Building2, CheckCircle2, MoreHorizontal, Rocket, UserPlus, Users } from "lucide-react";
 import AlertDialogComponent from '@/components/alert-dialog/AlertDialog';
 import {clearToast, deleteUserById, filterUsers, getAllUsers, LOGOUT} from '@/reducers/userReducer';
 import AddUserModal from '@/components/add-user-modal/AddUserModal';
@@ -166,7 +166,6 @@ const User = () =>{
     if(action === "delete"){
       setOpenDialog(true);
     }else if(action == 'edit'){
-      console.log("User to edit is ", data.name);
       setUserEditData(data);
       setIsEdit(true);
       setIsModalOpen(true);
@@ -358,7 +357,8 @@ const editUserhandler = (values) => {
                     className="h-14 w-14 rounded-2xl bg-blue-100 
                     flex items-center justify-center text-2xl"
                 >
-                    👨‍💼
+                   <Users className="h-5 w-5 text-blue-600" />
+
                 </div>
             </div>
         </div>
@@ -382,7 +382,8 @@ const editUserhandler = (values) => {
                     className="h-14 w-14 rounded-2xl bg-green-100 
                     flex items-center justify-center text-2xl"
                 >
-                    ✅
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+
                 </div>
             </div>
         </div>
@@ -406,7 +407,8 @@ const editUserhandler = (values) => {
                     className="h-14 w-14 rounded-2xl bg-purple-100 
                     flex items-center justify-center text-2xl"
                 >
-                    🏢
+                    <Building2 className="h-5 w-5 text-slate-600" />
+
                 </div>
             </div>
         </div>
@@ -430,7 +432,7 @@ const editUserhandler = (values) => {
                     className="h-14 w-14 rounded-2xl bg-orange-100 
                     flex items-center justify-center text-2xl"
                 >
-                    🚀
+                   <Rocket className="h-5 w-5 text-indigo-600" />
                 </div>
             </div>
         </div>

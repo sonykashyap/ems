@@ -73,6 +73,12 @@ const adminItems : SidebarLink[] = [
     active: false,
   },
   {
+    title: "Projects",
+    url: "/projects",
+    icon: UserRoundCog,
+    active: false,
+  },
+  {
     title: "Policies",
     url: "/policies",
     icon: Siren,
@@ -104,6 +110,12 @@ const userItems : SidebarLink[] = [
     url: "/dashboard",
     icon: CircleGauge,
     active: true,
+  },
+  {
+    title: "Attendance",
+    url: "/attendance",
+    icon: User2,  
+    active: false,
   },
   {
     title: "Leaves",

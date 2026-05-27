@@ -13,6 +13,7 @@ const Profile = React.lazy(()=> import('@/pages/profile/Profile'));
 const Spinner = React.lazy(()=> import('@/components/spinner/Spinner'));
 const User = React.lazy(() => import('./pages/users/User'));
 const Reports = React.lazy(() => import('./pages/reports/Reports'));
+const Projects = React.lazy(() => import('./pages/projects/Projects'));
 const Dashboard = React.lazy(()=> import('@/pages/dashboard/Dashboard'));
 const Roles = React.lazy(() => import('./pages/roles/Role'));
 const Events = React.lazy(() => import('./pages/events/Event'));
@@ -20,6 +21,7 @@ const Announcements = React.lazy(() => import('./pages/announcements/Announcemen
 const Leaves = React.lazy(() => import('./pages/leaves/Leave'));
 const Notifications = React.lazy(() => import('./pages/notifications/Notification'));
 const Policies = React.lazy(() => import('./pages/policies/Policy'));
+const Attendance = React.lazy(() => import('./pages/attendance/Attendance'));
 
 function App() {
 
@@ -45,6 +47,8 @@ function App() {
               <Route path="leaves" element={<Leaves />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="policies" element={<Policies />} />
+              <Route path="attendance" element={<Attendance />} />
+              <Route path="projects" element={<Projects />} />
               {/* <Route element={<Home />} /> */}
               {/* <Route path="profile" element={<UserProfile />} /> */}
               {/* </Route> */}
