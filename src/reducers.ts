@@ -5,6 +5,7 @@ import authReduer from './reducers/authReduer';
 import dashboardReducer from './reducers/dashboardReducer';
 import eventReducer from './reducers/eventReducer';
 import leaveReducer from './reducers/leavesReducer';
+import attendanceReducer from './reducers/attendanceReducer';
 
 export default combineReducers({
     userReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     authReduer,
     dashboardReducer,
     eventReducer,
-    leaveReducer
+    leaveReducer,
+    attendanceReducer
 });
