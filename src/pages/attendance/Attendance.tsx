@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { endBreak, fetchTodayAttendance, punchIn, punchOut, startBreak } from "@/reducers/attendanceReducer";
+import RecentAttendance from "./RecentAttendance";
+import TodaySummary from "./TodaySummary";
 
 const Attendance = () => {
     const dispatch = useAppDispatch();
@@ -272,7 +274,7 @@ const Attendance = () => {
         }
     }
 
-    const summaryTotalHours = workingTime;
+    const summaryTotalHours = formatHoursMinutes(workingTime);
 
     const summaryBreakTime = formatHoursMinutes(breakTime);
     const summaryProductivity = `${punchOutTimestamp ? Math.round((toSeconds(workingTime) / Math.max(1, toSeconds(workingTime) + toSeconds(breakTime))) * 100) : getProductivity()}%`;
@@ -310,7 +312,7 @@ const Attendance = () => {
                                     </p>
 
                                     <h2 className='text-4xl font-bold mt-3'>
-                                        Checked In
+                                        {isPunchedIn ? "Checked In" : "Checked Out"}
                                     </h2>
                                 </div>
 
@@ -431,201 +433,13 @@ const Attendance = () => {
                 {/* Right Attendance Details */}
                 <div className='xl:col-span-7 space-y-6'>
 
-                    {/* Today's Summary */}
-                    <div
-                        className='bg-white rounded-[32px]
-                        border border-black/5 shadow-xl p-6'
-                    >
+                   <TodaySummary 
+                        summaryTotalHours={summaryTotalHours} 
+                        summaryBreakTime={summaryBreakTime} 
+                        summaryProductivity={summaryProductivity} 
+                    />
 
-                        <div className='flex items-center justify-between mb-8'>
-
-                            <div>
-                                <h2 className='text-2xl font-bold text-gray-800'>
-                                    Today's Summary
-                                </h2>
-
-                                <p className='text-gray-500 mt-1 text-sm'>
-                                    Real-time attendance insights
-                                </p>
-                            </div>
-
-                            <button
-                                className='h-11 px-5 rounded-2xl border
-                                border-gray-200 bg-gray-50 hover:bg-gray-100
-                                transition-all duration-300'
-                            >
-                                Attendance History
-                            </button>
-                        </div>
-
-                        {/* Stats */}
-                        <div className='grid grid-cols-1 sm:grid-cols-3 gap-5'>
-
-                            {[
-                                {
-                                    title: "Total Hours",
-                                        value: summaryTotalHours,
-                                    icon: "⏱️",
-                                    bg: "bg-blue-50",
-                                    text: "text-blue-700",
-                                },
-                                {
-                                    title: "Break Taken",
-                                        value: summaryBreakTime,
-                                    icon: "☕",
-                                    bg: "bg-orange-50",
-                                    text: "text-orange-600",
-                                },
-                                {
-                                    title: "Productivity",
-                                        value: summaryProductivity,
-                                    icon: "📈",
-                                    bg: "bg-emerald-50",
-                                    text: "text-emerald-600",
-                                },
-                            ].map((item, i) => (
-                                <div
-                                    key={i}
-                                    className={`rounded-3xl p-5 ${item.bg}`}
-                                >
-
-                                    <div className='flex items-start justify-between'>
-
-                                        <div>
-                                            <p className='text-sm text-gray-500'>
-                                                {item.title}
-                                            </p>
-
-                                            <h2
-                                                className={`text-3xl font-bold mt-3 ${item.text}`}
-                                            >
-                                                {item.value}
-                                            </h2>
-                                        </div>
-
-                                        <div
-                                            className='h-12 w-12 rounded-2xl bg-white
-                                            flex items-center justify-center text-2xl'
-                                        >
-                                            {item.icon}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Recent Attendance */}
-                    <div
-                        className='bg-white rounded-[32px]
-                        border border-black/5 shadow-xl p-6'
-                    >
-
-                        <div className='flex items-center justify-between mb-8'>
-
-                            <div>
-                                <h2 className='text-2xl font-bold text-gray-800'>
-                                    Recent Attendance
-                                </h2>
-
-                                <p className='text-gray-500 mt-1 text-sm'>
-                                    Your last attendance records
-                                </p>
-                            </div>
-
-                            <button
-                                className='text-blue-600 font-semibold hover:text-blue-700'
-                            >
-                                View All
-                            </button>
-                        </div>
-
-                        {/* Attendance List */}
-                        <div className='space-y-4'>
-
-                            {[
-                                {
-                                    date: "27 Aug 2026",
-                                    in: "09:12 AM",
-                                    out: "-- : --",
-                                    status: "Working",
-                                    color: "bg-blue-100 text-blue-700",
-                                },
-                                {
-                                    date: "26 Aug 2026",
-                                    in: "09:04 AM",
-                                    out: "06:31 PM",
-                                    status: "Completed",
-                                    color: "bg-emerald-100 text-emerald-700",
-                                },
-                                {
-                                    date: "25 Aug 2026",
-                                    in: "09:28 AM",
-                                    out: "06:22 PM",
-                                    status: "Late",
-                                    color: "bg-red-100 text-red-700",
-                                },
-                            ].map((attendance, i) => (
-                                <div
-                                    key={i}
-                                    className='flex flex-col md:flex-row md:items-center
-                                    md:justify-between gap-5 rounded-3xl border
-                                    border-black/5 p-5 hover:bg-gray-50
-                                    transition-all duration-300'
-                                >
-
-                                    {/* Left */}
-                                    <div className='flex items-center gap-4'>
-
-                                        <div
-                                            className='h-14 w-14 rounded-2xl bg-blue-50
-                                            flex items-center justify-center text-2xl'
-                                        >
-                                            📅
-                                        </div>
-
-                                        <div>
-                                            <h3 className='font-semibold text-gray-800'>
-                                                {attendance.date}
-                                            </h3>
-
-                                            <p className='text-sm text-gray-500 mt-1'>
-                                                Punch In: {attendance.in}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Center */}
-                                    <div className='flex items-center gap-10'>
-
-                                        <div>
-                                            <p className='text-sm text-gray-500'>
-                                                Punch Out
-                                            </p>
-
-                                            <h3 className='font-semibold text-gray-800 mt-1'>
-                                                {attendance.out}
-                                            </h3>
-                                        </div>
-
-                                        <div>
-                                            <p className='text-sm text-gray-500'>
-                                                Status
-                                            </p>
-
-                                            <span
-                                                className={`inline-flex mt-1 px-4 py-2
-                                                rounded-2xl text-sm font-semibold
-                                                ${attendance.color}`}
-                                            >
-                                                {attendance.status}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <RecentAttendance />
                 </div>
             </div>
         </>
