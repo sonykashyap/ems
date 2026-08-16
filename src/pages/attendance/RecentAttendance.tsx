@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { JSX } from 'react'
+import {format} from 'date-fns';
 
-const RecentAttendance = () => {
+type AttendanceRecord = {
+    
+_id: string;
+break_time: string;
+createdAt: string;
+punch_in: string;
+punch_out: string;
+status: string;
+total_hours: string;
+updatedAt: string;
+user_id: string;
+}
+
+
+type Props = {
+    attendance: AttendanceRecord[];
+}
+
+const RecentAttendance = ({ attendance }: Props) => {
+
   return (
     <>
         {/* Recent Attendance */}
@@ -31,29 +51,31 @@ const RecentAttendance = () => {
             {/* Attendance List */}
             <div className='space-y-4'>
 
-                {[
-                    {
-                        date: "27 Aug 2026",
-                        in: "09:12 AM",
-                        out: "-- : --",
-                        status: "Working",
-                        color: "bg-blue-100 text-blue-700",
-                    },
-                    {
-                        date: "26 Aug 2026",
-                        in: "09:04 AM",
-                        out: "06:31 PM",
-                        status: "Completed",
-                        color: "bg-emerald-100 text-emerald-700",
-                    },
-                    {
-                        date: "25 Aug 2026",
-                        in: "09:28 AM",
-                        out: "06:22 PM",
-                        status: "Late",
-                        color: "bg-red-100 text-red-700",
-                    },
-                ].map((attendance, i) => (
+                {
+                // [
+                //     {
+                //         date: "27 Aug 2026",
+                //         in: "09:12 AM",
+                //         out: "-- : --",
+                //         status: "Working",
+                //         color: "bg-blue-100 text-blue-700",
+                //     },
+                //     {
+                //         date: "26 Aug 2026",
+                //         in: "09:04 AM",
+                //         out: "06:31 PM",
+                //         status: "Completed",
+                //         color: "bg-emerald-100 text-emerald-700",
+                //     },
+                //     {
+                //         date: "25 Aug 2026",
+                //         in: "09:28 AM",
+                //         out: "06:22 PM",
+                //         status: "Late",
+                //         color: "bg-red-100 text-red-700",
+                //     },
+                // ]
+                attendance?.map((attendance, i) => (
                     <div
                         key={i}
                         className='flex flex-col md:flex-row md:items-center
@@ -74,11 +96,11 @@ const RecentAttendance = () => {
 
                             <div>
                                 <h3 className='font-semibold text-gray-800'>
-                                    {attendance.date}
+                                    {format(new Date(attendance.createdAt), "dd MMM yyyy")} {/* Display only the date part */}
                                 </h3>
 
                                 <p className='text-sm text-gray-500 mt-1'>
-                                    Punch In: {attendance.in}
+                                    Punch In: {format(new Date(attendance.punch_in), "hh:mm a")}
                                 </p>
                             </div>
                         </div>
@@ -92,7 +114,7 @@ const RecentAttendance = () => {
                                 </p>
 
                                 <h3 className='font-semibold text-gray-800 mt-1'>
-                                    {attendance.out}
+                                    {attendance.punch_out && attendance.punch_out !== "-- : --" ? format(new Date(attendance.punch_out), "hh:mm a") : "-- : --"}
                                 </h3>
                             </div>
 
@@ -103,8 +125,8 @@ const RecentAttendance = () => {
 
                                 <span
                                     className={`inline-flex mt-1 px-4 py-2
-                                    rounded-2xl text-sm font-semibold
-                                    ${attendance.color}`}
+                                    rounded-2xl text-sm font-semibold ${attendance.status === "out" ? "bg-emerald-100 text-emerald-700" : attendance.status === "in" ? "bg-blue-100 text-blue-700" : attendance.status === "Late" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}
+                                    `}
                                 >
                                     {attendance.status}
                                 </span>

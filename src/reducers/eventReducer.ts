@@ -45,7 +45,6 @@ export const addEvent = createAsyncThunk(
     "event/add",
     async (payload) => {
         try{
-            console.log("payload for event data is ", payload);
             const response = await axiosInstance.post("/event", payload);
             return response.data;
         }catch(error){

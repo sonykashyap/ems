@@ -126,34 +126,6 @@ const Event = () => {
 
     useEffect(()=>{
         dispatch(listEvents());
-        // const obj = {
-        //     "a_b_c": 1,
-        //     "a_b_d": 2
-        // };
-        // for(const keys in obj){
-        //     console.log("Keys are ", keys);
-        //     let key = keys.split("_");
-        //     console.log("Key is ", key);
-
-        // }
-        // const result = {};
-        // for(const key in obj){
-        //     const keys = key.split("_");
-        //     let current = result;
-            
-        //     keys.forEach((k,index)=>{
-        //         if(index === keys.length -1){
-        //             current[k] = obj[key];
-        //         }else{
-        //             console.log("Inside the else condition");
-        //             current[k] = current[k] || {};
-        //             current = current[k];
-        //         }
-                
-        //     })
-        // }
-
-        // console.log("Result is ", result);
     },[]);
 
     useEffect(()=>{
