@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import {useQuery} from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { endBreak, fetchTodayAttendance, punchIn, punchOut, startBreak } from "@/reducers/attendanceReducer";
 import RecentAttendance from "./RecentAttendance";
 import TodaySummary from "./TodaySummary";
+import axiosInstance from "@/axios/axiosInstance";
 
 const Attendance = () => {
     const dispatch = useAppDispatch();
@@ -26,6 +28,25 @@ const Attendance = () => {
     } catch {
         userId = null;
     }
+
+    //Fetch all the attendance for current logged in user
+    const fetchAttendance = async () => {
+        if (!userId) {
+            setStatusMessage("Unable to detect the current user");
+            return;
+        }
+        const response = await axiosInstance.get(`/attendance/${userId}`);
+        return response.data?.attendance;
+    }
+
+    //Tanstack query call to fetch attendance data
+    const {data, isLoading, isError} = useQuery({
+        queryKey:['attendance', userId],
+        queryFn: fetchAttendance,
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+
+    console.log("Attendance data fetched from API:", data);
 
     const isToday = (dateValue: Date) => dateValue.toDateString() === new Date().toDateString();
 
@@ -439,7 +460,7 @@ const Attendance = () => {
                         summaryProductivity={summaryProductivity} 
                     />
 
-                    <RecentAttendance />
+                    <RecentAttendance attendance={data} />
                 </div>
             </div>
         </>
