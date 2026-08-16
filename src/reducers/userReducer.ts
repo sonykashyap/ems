@@ -354,7 +354,6 @@ const userReducer = createSlice({
             }
         })
         .addCase(getProfile.fulfilled, (state, action)=>{
-            console.log("Profile data is ", action.payload);
             state.userProfileData = action.payload;
         })
         .addCase(getProfile.rejected, (state, action)=>{
