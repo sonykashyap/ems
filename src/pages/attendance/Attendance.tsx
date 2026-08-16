@@ -46,8 +46,6 @@ const Attendance = () => {
         staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
-    console.log("Attendance data fetched from API:", data);
-
     const isToday = (dateValue: Date) => dateValue.toDateString() === new Date().toDateString();
 
     const formatTwoDigits = (value: number) => (value < 10 ? `0${value}` : `${value}`);
