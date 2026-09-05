@@ -26,16 +26,19 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
   newlyAddedUserId?: string | null,
+  page?: number,
+  totalPages?: number,
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  newlyAddedUserId
+  newlyAddedUserId,
+  page,
+  totalPages
 }: DataTableProps<TData, TValue>) {
   const dispatch = useAppDispatch();
-  const page = useAppSelector(state=> state.userReducer.page);
-  const totalPages = useAppSelector(state=> state.userReducer.totalPages);
+  
   const table = useReactTable({
     data,
     columns,
@@ -221,7 +224,7 @@ export function DataTable<TData, TValue>({
 
   {/* Pagination */}
   {
-    pages.length > 0 &&
+    totalPages > 1 &&
 
     <div className="
       flex flex-col md:flex-row

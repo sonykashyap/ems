@@ -30,11 +30,13 @@ const User = () =>{
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const data = useAppSelector((state: RootState) => state.userReducer.users);
+  const totalUsers = useAppSelector((state: RootState) => state.userReducer.total);
   const error = useAppSelector((state: RootState)=> state.userReducer.error);
   const isLoading = useAppSelector((state: RootState)=> state.userReducer.loading);
   const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
   const filterData = useAppSelector(state=> state.userReducer.filterData);
   const page = useAppSelector(state=> state.userReducer.page);
+  const totalPages = useAppSelector(state=> state.userReducer.totalPages);
   const [openDialog, setOpenDialog] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [id, setId] = useState<string | null>(null);
@@ -266,7 +268,7 @@ const editUserhandler = (values) => {
     return(
       <>
         {/* <div className='flex justify-between mb-2'>
-          <h1 className='text-violet-500 text-2xl'>Employees</h1>
+          <h1 className='text-violet-500 text-2xl'>Users</h1>
           <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
         </div>
         <div className='mb-2'>
@@ -316,11 +318,11 @@ const editUserhandler = (values) => {
     >
         <div>
             <h1 className="text-3xl font-bold text-gray-800">
-                Employees
+                Users
             </h1>
 
             <p className="text-gray-500 mt-1">
-                Manage employees, roles and account information
+                Manage users, roles and account information
             </p>
         </div>
 
@@ -345,11 +347,11 @@ const editUserhandler = (values) => {
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm text-gray-500">
-                        Total Employees
+                        Total Users
                     </p>
 
                     <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                        {data?.length || 0}
+                        {totalUsers || 0}
                     </h2>
                 </div>
 
@@ -500,7 +502,7 @@ const editUserhandler = (values) => {
                             <Spinner className="size-8 text-blue-600" />
 
                             <p className="text-sm text-gray-500">
-                                Loading employees...
+                                Loading Users...
                             </p>
                         </div>
                     </div>
@@ -514,6 +516,8 @@ const editUserhandler = (values) => {
                             columns={columns}
                             data={filterData.length > 0 ? filterData : data}
                             newlyAddedUserId={lastAddedUserId}
+                            page={page}
+                            totalPages={totalPages}
                         />
                     </div>
             }
@@ -530,7 +534,7 @@ const editUserhandler = (values) => {
                 <span className="font-semibold text-gray-700">
                     {(filterData.length > 0 ? filterData : data)?.length || 0}
                 </span>{" "}
-                employees
+                users
             </p>
         </div>
     </div>
