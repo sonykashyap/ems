@@ -41,6 +41,7 @@ interface UserState {
     sort: string;
     order: string;
     search: string;
+    activeUsers: number;
     filterData: []
 
 }
@@ -64,6 +65,7 @@ const initialState : UserState = {
     sort: "createdAt",
     order: "desc",
     search: "",
+    activeUsers: 0,
     filterData: []
     
 }
@@ -74,7 +76,6 @@ export const getAllUsers = createAsyncThunk(
     async (page:number,{rejectWithValue}) => {
         try{
             const users = await axiosInstance.get(ENDPOINTS.ENDPOINTS.users.list(page));
-            console.log("All the employees are ", users);
             return users.data;
         }catch(error){
             if(error instanceof Error){
@@ -286,6 +287,7 @@ const userReducer = createSlice({
             // state.page = action.payload.page;
             state.totalPages = action.payload.totalPages;
             state.total = action.payload.total;
+            state.activeUsers = action.payload.activeUsers;
             state.limit = action.payload.limit;
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{

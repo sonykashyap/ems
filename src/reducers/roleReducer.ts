@@ -46,7 +46,10 @@ export const getAllRoles = createAsyncThunk(
             return response.data.roles;
         }catch(error){
             console.log(error);
-            return rejectWithValue(error.response?.data || error.message);
+            if(error instanceof Error){
+                return rejectWithValue(error.message);
+            }
+            
         }
     }
 )
@@ -117,6 +120,9 @@ const roleReducer = createSlice({
         .addCase(getAllRoles.fulfilled, (state: roleState, action)=>{
             state.loading = false;
             state.roles = action.payload;
+            state.totalPages = action.payload.totalPages;
+            state.total = action.payload.total;
+            state.limit = action.payload.limit;
         })
         .addCase(getAllRoles.rejected,(state, action)=>{
             state.loading = false;

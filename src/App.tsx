@@ -1,8 +1,10 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { Toaster } from '@/components/ui/sonner';
 import FortgotPassword from './pages/forgot-password/index';
+import Chatbot from './components/chatbot/Chatbot';
+import { Button } from './components/ui/button';
 const Setting = React.lazy(()=> import('@/pages/settings/Setting'));
 const Login = React.lazy(()=> import('@/pages/login/Login'));
 const Home = React.lazy(()=> import('@/pages/home/Home'));
@@ -24,13 +26,19 @@ const Policies = React.lazy(() => import('./pages/policies/Policy'));
 const Attendance = React.lazy(() => import('./pages/attendance/Attendance'));
 
 function App() {
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   return (
     <>
       <BrowserRouter>
         <Suspense fallback={<Spinner />}>
           <Toaster position="top-center" theme="light" />
-          
+          <Button 
+            className="fixed bottom-4 z-1 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg" 
+            onClick={() => setIsChatbotOpen(!isChatbotOpen)}>
+            ChatBot
+          </Button>
+          {isChatbotOpen && <Chatbot />}
           <Routes>
             {/* User protected Routes */}
             {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
