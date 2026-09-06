@@ -59,6 +59,7 @@ const Login = () =>{
 
     if(response.status == 200){
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("role", response.data.user.role);
       localStorage.setItem("userData", JSON.stringify(response.data.user));
       // if(response.data.user.role === "admin"){

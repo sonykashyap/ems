@@ -23,6 +23,10 @@ export type UsersData = {
   status: "pending" | "active" | "deleted"
   name: string
   createdAt: string
+  roleId: {
+    id: string
+    name: string
+  }
 }
 
 const User = () =>{
