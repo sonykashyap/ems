@@ -11,13 +11,14 @@ interface roleState {
         message: string | null;
         type: "success" | "error" | null;
     },
-    page: 1,
-    totalPages: 0,
-    limit: 5,
-    total: 0,
-    sort: "createdAt",
-    order: "desc",
-    search: ""
+    page: number,
+    totalPages: number,
+    limit: number,
+    total: number,
+    sort: string,
+    order: string,
+    search: string,
+    totalAdminRoles?: number
 }
 
 
@@ -35,7 +36,8 @@ const initialState : roleState = {
     total: 0,
     sort: "createdAt",
     order: "desc",
-    search: ""
+    search: "",
+    totalAdminRoles: 0
 }
 
 export const getAllRoles = createAsyncThunk(
@@ -43,7 +45,7 @@ export const getAllRoles = createAsyncThunk(
     async (page:number, {rejectWithValue}) => {
         try{
             const response = await axiosInstance.get(ENDPOINTS.ENDPOINTS.roles.list(page));
-            return response.data.roles;
+            return response.data;
         }catch(error){
             console.log(error);
             if(error instanceof Error){
@@ -74,11 +76,11 @@ export const editRole = createAsyncThunk(
     "role/edit",
     async (values, {rejectWithValue}) =>{
         try{
-            console.log("EDIT Role value ", values);
             const response = await axiosInstance.patch(`/edit-role/${values.roleId}`, values);
             return response;
         }catch(error){
             console.log("ERROR:",error);
+            return rejectWithValue(error.response?.data || error.message);
         }
     }
 )
@@ -119,10 +121,11 @@ const roleReducer = createSlice({
         })
         .addCase(getAllRoles.fulfilled, (state: roleState, action)=>{
             state.loading = false;
-            state.roles = action.payload;
+            state.roles = action.payload.roles;
             state.totalPages = action.payload.totalPages;
             state.total = action.payload.total;
             state.limit = action.payload.limit;
+            state.totalAdminRoles = action.payload.totalAdminRoles;
         })
         .addCase(getAllRoles.rejected,(state, action)=>{
             state.loading = false;

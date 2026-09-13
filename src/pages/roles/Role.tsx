@@ -40,6 +40,7 @@ const Role = () => {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const roles = useAppSelector((state:RootState) => state.roleReducer.roles);
+  const totalAdminRoles = useAppSelector((state:RootState) => state.roleReducer.totalAdminRoles);
   const toastState = useAppSelector((state) => state.roleReducer.toast);
   const isLoading = useAppSelector((state) => state.roleReducer.loading);
   const [openDialog, setOpenDialog] = useState(false);
@@ -276,7 +277,7 @@ const Role = () => {
                     </p>
 
                     <h2 className="text-3xl font-bold text-blue-600 mt-2">
-                        02
+                        {totalAdminRoles}
                     </h2>
                 </div>
 
