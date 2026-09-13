@@ -42,7 +42,8 @@ interface UserState {
     order: string;
     search: string;
     activeUsers: number;
-    filterData: []
+    filterData: [],
+    totalCurrentMonthUsers: number;
 
 }
 
@@ -66,8 +67,8 @@ const initialState : UserState = {
     order: "desc",
     search: "",
     activeUsers: 0,
-    filterData: []
-    
+    filterData: [],
+    totalCurrentMonthUsers: 0
 }
 
 //Get all users
@@ -173,7 +174,6 @@ export const getProfile = createAsyncThunk(
     async()=>{
         try{
             const user = JSON.parse(localStorage.getItem("userData") ?? "");
-            console.log("userId is ", user.id);
             const response = await axiosInstance.get(`/profile/${user.id}`);
             return response.data.data;
         }catch(error){
@@ -289,6 +289,7 @@ const userReducer = createSlice({
             state.total = action.payload.total;
             state.activeUsers = action.payload.activeUsers;
             state.limit = action.payload.limit;
+            state.totalCurrentMonthUsers = action.payload.totalCurrentMonthUsers;
         })
         .addCase(getAllUsers.rejected, (state, action: ReturnType<typeof getAllUsers.rejected>)=>{
             state.loading = false;

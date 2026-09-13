@@ -35,6 +35,7 @@ const User = () =>{
   const navigate = useNavigate();
   const data = useAppSelector((state: RootState) => state.userReducer.users);
   const totalUsers = useAppSelector((state: RootState) => state.userReducer.total);
+  const totalCurrentMonthUsers = useAppSelector((state: RootState) => state.userReducer.totalCurrentMonthUsers);
   const error = useAppSelector((state: RootState)=> state.userReducer.error);
   const isLoading = useAppSelector((state: RootState)=> state.userReducer.loading);
   const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
@@ -430,7 +431,7 @@ const editUserhandler = (values) => {
                     </p>
 
                     <h2 className="text-3xl font-bold text-orange-500 mt-2">
-                        12
+                        {totalCurrentMonthUsers || 0}
                     </h2>
                 </div>
 
