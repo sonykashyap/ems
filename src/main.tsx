@@ -1,10 +1,15 @@
 import { StrictMode } from 'react'
+import { registerSW } from 'virtual:pwa-register'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import {Provider} from 'react-redux';
 import {store} from './store';
 import App from '@/App'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+
+registerSW({
+  immediate: true,
+})
 
 const queryClient = new QueryClient();
 
