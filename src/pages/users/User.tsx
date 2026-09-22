@@ -179,48 +179,48 @@ const User = () =>{
     }
   }
 
-const addNewUser = async (values) => {
-  try{
+  const addNewUser = async (values) => {
+    try{
 
-    await dispatch(addUser(values)).unwrap();
-    dispatch(getAllUsers(page));
-    setIsModalOpen(false);
-
-  }catch(error){
-    if(error instanceof Error){
-      throw new Error(error.message);
-    }
-    throw new Error("Something went wrong");
-  }
-   setIsModalOpen(false);
-}
-
-const editUserhandler = (values) => {
-  dispatch(editUser(values))
-  .then(response=>{
-    setIsModalOpen(false);
-    if(response.payload.status === 200){
+      await dispatch(addUser(values)).unwrap();
       dispatch(getAllUsers(page));
-      toast(`User updated successfully`, {
-        classNames: {
-          toast: "!bg-green-200",
-          title: "font-bold !text-green-600",
-        }
-      });
-    }else{
-      toast(`Failed to update user`, {
-        classNames: {
-          toast: "!bg-red-200",
-          title: "font-bold !text-red-600",
-        },
-      });
+      setIsModalOpen(false);
+
+    }catch(error){
+      if(error instanceof Error){
+        throw new Error(error.message);
+      }
+      throw new Error("Something went wrong");
     }
-    
-  })
-  .catch(error=>{
-    console.log(error);
-  });
-}
+    setIsModalOpen(false);
+  }
+
+  const editUserhandler = (values) => {
+    dispatch(editUser(values))
+    .then(response=>{
+      setIsModalOpen(false);
+      if(response.payload.status === 200){
+        dispatch(getAllUsers(page));
+        toast(`User updated successfully`, {
+          classNames: {
+            toast: "!bg-green-200",
+            title: "font-bold !text-green-600",
+          }
+        });
+      }else{
+        toast(`Failed to update user`, {
+          classNames: {
+            toast: "!bg-red-200",
+            title: "font-bold !text-red-600",
+          },
+        });
+      }
+      
+    })
+    .catch(error=>{
+      console.log(error);
+    });
+  }
 
   const deleteRoleHandler = async () => {
     try{
@@ -272,306 +272,264 @@ const editUserhandler = (values) => {
 
     return(
       <>
-        {/* <div className='flex justify-between mb-2'>
-          <h1 className='text-violet-500 text-2xl'>Users</h1>
-          <Button onClick={()=> setIsModalOpen(true)}> <UserPlus /> Add</Button>
-        </div>
-        <div className='mb-2'>
-          <Input
-          value={search}
-            placeholder='Search by name, email or role'
-            className='bg-white'
-            onChange={(e)=>{
-              setSearch(e.target.value);
-            }}
-          />
-        </div>
-        {
-          isLoading ?
-          <div className="flex items-center justify-center gap-6">
-            <Spinner className="size-3" />
-          </div> :
-          <DataTable 
-            columns={columns} 
-            data={filterData.length > 0 ? filterData : data} 
-            newlyAddedUserId={lastAddedUserId}
-          />
-        }
-        {openDialog && <AlertDialogComponent 
-          isOpen={openDialog} 
-          id={id} 
-          setOpenDialog={setOpenDialog} 
-          deleteMethod={deleteRoleHandler}
-          message="Are you sure, you want to delete this?" /> }
+        <div className="space-y-6">
 
-        {isModalOpen && 
-          <AddUserModal 
-            isModalOpen={isModalOpen} 
-            setIsModalOpen={setIsModalOpen} 
-            addNewUser={addNewUser} 
-            isEdit={isEdit} 
-            setIsEdit={setIsEdit} 
-            userEditData={userEditData} 
-            editUserhandler={editUserhandler} 
-          />  } */}
-          <div className="space-y-6">
+          {/* Header */}
+          <div
+              className="flex flex-col lg:flex-row lg:items-center 
+              lg:justify-between gap-4"
+          >
+              <div>
+                  <h1 className="text-3xl font-bold text-gray-800">
+                      Users
+                  </h1>
 
-    {/* Header */}
-    <div
-        className="flex flex-col lg:flex-row lg:items-center 
-        lg:justify-between gap-4"
-    >
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-                Users
-            </h1>
+                  <p className="text-gray-500 mt-1">
+                      Manage users, roles and account information
+                  </p>
+              </div>
 
-            <p className="text-gray-500 mt-1">
-                Manage users, roles and account information
-            </p>
-        </div>
+              <Button
+                  onClick={() => setIsModalOpen(true)}
+                  className="h-12 px-6 rounded-2xl bg-gradient-to-r 
+                  from-blue-600 to-indigo-600 text-white font-semibold
+                  shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                  <UserPlus className="mr-2 h-5 w-5" />
+                  Add Employee
+              </Button>
+          </div>
 
-        <Button
-            onClick={() => setIsModalOpen(true)}
-            className="h-12 px-6 rounded-2xl bg-gradient-to-r 
-            from-blue-600 to-indigo-600 text-white font-semibold
-            shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-            <UserPlus className="mr-2 h-5 w-5" />
-            Add Employee
-        </Button>
-    </div>
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
-    {/* Stats */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+              <div
+                  className="bg-white rounded-3xl border border-black/5 
+                  shadow-lg p-5"
+              >
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <p className="text-sm text-gray-500">
+                              Total Users
+                          </p>
 
-        <div
-            className="bg-white rounded-3xl border border-black/5 
-            shadow-lg p-5"
-        >
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-500">
-                        Total Users
-                    </p>
+                          <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                              {totalUsers || 0}
+                          </h2>
+                      </div>
 
-                    <h2 className="text-3xl font-bold text-gray-800 mt-2">
-                        {totalUsers || 0}
-                    </h2>
-                </div>
+                      <div
+                          className="h-14 w-14 rounded-2xl bg-blue-100 
+                          flex items-center justify-center text-2xl"
+                      >
+                          <Users className="h-5 w-5 text-blue-600" />
 
-                <div
-                    className="h-14 w-14 rounded-2xl bg-blue-100 
-                    flex items-center justify-center text-2xl"
-                >
-                   <Users className="h-5 w-5 text-blue-600" />
+                      </div>
+                  </div>
+              </div>
 
-                </div>
-            </div>
-        </div>
+              <div
+                  className="bg-white rounded-3xl border border-black/5 
+                  shadow-lg p-5"
+              >
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <p className="text-sm text-gray-500">
+                              Active Users
+                          </p>
 
-        <div
-            className="bg-white rounded-3xl border border-black/5 
-            shadow-lg p-5"
-        >
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-500">
-                        Active Users
-                    </p>
+                          <h2 className="text-3xl font-bold text-green-600 mt-2">
+                              {data?.length || 0}
+                          </h2>
+                      </div>
 
-                    <h2 className="text-3xl font-bold text-green-600 mt-2">
-                        {data?.length || 0}
-                    </h2>
-                </div>
+                      <div
+                          className="h-14 w-14 rounded-2xl bg-green-100 
+                          flex items-center justify-center text-2xl"
+                      >
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />
 
-                <div
-                    className="h-14 w-14 rounded-2xl bg-green-100 
-                    flex items-center justify-center text-2xl"
-                >
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                      </div>
+                  </div>
+              </div>
 
-                </div>
-            </div>
-        </div>
+              <div
+                  className="bg-white rounded-3xl border border-black/5 
+                  shadow-lg p-5"
+              >
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <p className="text-sm text-gray-500">
+                              Departments
+                          </p>
 
-        <div
-            className="bg-white rounded-3xl border border-black/5 
-            shadow-lg p-5"
-        >
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-500">
-                        Departments
-                    </p>
+                          <h2 className="text-3xl font-bold text-purple-600 mt-2">
+                              08
+                          </h2>
+                      </div>
 
-                    <h2 className="text-3xl font-bold text-purple-600 mt-2">
-                        08
-                    </h2>
-                </div>
+                      <div
+                          className="h-14 w-14 rounded-2xl bg-purple-100 
+                          flex items-center justify-center text-2xl"
+                      >
+                          <Building2 className="h-5 w-5 text-slate-600" />
 
-                <div
-                    className="h-14 w-14 rounded-2xl bg-purple-100 
-                    flex items-center justify-center text-2xl"
-                >
-                    <Building2 className="h-5 w-5 text-slate-600" />
+                      </div>
+                  </div>
+              </div>
 
-                </div>
-            </div>
-        </div>
+              <div
+                  className="bg-white rounded-3xl border border-black/5 
+                  shadow-lg p-5"
+              >
+                  <div className="flex items-center justify-between">
+                      <div>
+                          <p className="text-sm text-gray-500">
+                              New This Month
+                          </p>
 
-        <div
-            className="bg-white rounded-3xl border border-black/5 
-            shadow-lg p-5"
-        >
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-500">
-                        New This Month
-                    </p>
+                          <h2 className="text-3xl font-bold text-orange-500 mt-2">
+                              {totalCurrentMonthUsers || 0}
+                          </h2>
+                      </div>
 
-                    <h2 className="text-3xl font-bold text-orange-500 mt-2">
-                        {totalCurrentMonthUsers || 0}
-                    </h2>
-                </div>
+                      <div
+                          className="h-14 w-14 rounded-2xl bg-orange-100 
+                          flex items-center justify-center text-2xl"
+                      >
+                          <Rocket className="h-5 w-5 text-indigo-600" />
+                      </div>
+                  </div>
+              </div>
+          </div>
 
-                <div
-                    className="h-14 w-14 rounded-2xl bg-orange-100 
-                    flex items-center justify-center text-2xl"
-                >
-                   <Rocket className="h-5 w-5 text-indigo-600" />
-                </div>
-            </div>
-        </div>
-    </div>
+          {/* Main Table Card */}
+          <div
+              className="bg-white rounded-3xl border border-black/5 
+              shadow-xl overflow-hidden"
+          >
 
-    {/* Main Table Card */}
-    <div
-        className="bg-white rounded-3xl border border-black/5 
-        shadow-xl overflow-hidden"
-    >
+              {/* Top Actions */}
+              <div
+                  className="p-6 border-b border-gray-100 
+                  flex flex-col lg:flex-row lg:items-center 
+                  lg:justify-between gap-4"
+              >
 
-        {/* Top Actions */}
-        <div
-            className="p-6 border-b border-gray-100 
-            flex flex-col lg:flex-row lg:items-center 
-            lg:justify-between gap-4"
-        >
+                  {/* Search */}
+                  <div className="relative w-full lg:max-w-md">
+                      <Input
+                          value={search}
+                          placeholder="Search by name, email or role"
+                          className="bg-gray-50 border-gray-200 rounded-2xl 
+                          h-12 pl-4 focus-visible:ring-4 focus-visible:ring-blue-100"
+                          onChange={(e) => {
+                              setSearch(e.target.value);
+                          }}
+                      />
+                  </div>
 
-            {/* Search */}
-            <div className="relative w-full lg:max-w-md">
-                <Input
-                    value={search}
-                    placeholder="Search by name, email or role"
-                    className="bg-gray-50 border-gray-200 rounded-2xl 
-                    h-12 pl-4 focus-visible:ring-4 focus-visible:ring-blue-100"
-                    onChange={(e) => {
-                        setSearch(e.target.value);
-                    }}
+                  {/* Right Filters */}
+                  <div className="flex flex-wrap gap-3">
+
+                      <select
+                          className="h-12 px-4 rounded-2xl border border-gray-200 
+                          bg-gray-50 text-sm outline-none"
+                      >
+                          <option>All Roles</option>
+                          <option>Admin</option>
+                          <option>Employee</option>
+                      </select>
+
+                      <select
+                          className="h-12 px-4 rounded-2xl border border-gray-200 
+                          bg-gray-50 text-sm outline-none"
+                      >
+                          <option>Status</option>
+                          <option>Active</option>
+                          <option>Inactive</option>
+                      </select>
+                  </div>
+              </div>
+
+              {/* Table */}
+              <div className="p-4">
+
+                  {
+                      isLoading ?
+
+                          <div className="flex items-center justify-center py-20">
+                              <div
+                                  className="flex flex-col items-center gap-4"
+                              >
+                                  <Spinner className="size-8 text-blue-600" />
+
+                                  <p className="text-sm text-gray-500">
+                                      Loading Users...
+                                  </p>
+                              </div>
+                          </div>
+
+                          :
+
+                          <div
+                              className="rounded-2xl border border-gray-100 overflow-hidden"
+                          >
+                              <DataTable
+                                  columns={columns}
+                                  data={filterData.length > 0 ? filterData : data}
+                                  newlyAddedUserId={lastAddedUserId}
+                                  page={page}
+                                  totalPages={totalPages}
+                              />
+                          </div>
+                  }
+              </div>
+
+              {/* Footer */}
+              <div
+                  className="px-6 py-4 border-t border-gray-100 
+                  flex flex-col md:flex-row md:items-center 
+                  md:justify-between gap-3"
+              >
+                  <p className="text-sm text-gray-500">
+                      Showing{" "}
+                      <span className="font-semibold text-gray-700">
+                          {(filterData.length > 0 ? filterData : data)?.length || 0}
+                      </span>{" "}
+                      users
+                  </p>
+              </div>
+          </div>
+
+          {/* Delete Dialog */}
+          {
+            openDialog && (
+                <AlertDialogComponent
+                    isOpen={openDialog}
+                    id={id}
+                    setOpenDialog={setOpenDialog}
+                    deleteMethod={deleteRoleHandler}
+                    message="Are you sure, you want to delete this?"
                 />
-            </div>
+            )
+          }
 
-            {/* Right Filters */}
-            <div className="flex flex-wrap gap-3">
-
-                <select
-                    className="h-12 px-4 rounded-2xl border border-gray-200 
-                    bg-gray-50 text-sm outline-none"
-                >
-                    <option>All Roles</option>
-                    <option>Admin</option>
-                    <option>Employee</option>
-                </select>
-
-                <select
-                    className="h-12 px-4 rounded-2xl border border-gray-200 
-                    bg-gray-50 text-sm outline-none"
-                >
-                    <option>Status</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                </select>
-            </div>
+          {/* Add/Edit Modal */}
+          {
+            isModalOpen && (
+                <AddUserModal
+                    isModalOpen={isModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                    addNewUser={addNewUser}
+                    isEdit={isEdit}
+                    setIsEdit={setIsEdit}
+                    userEditData={userEditData}
+                    editUserhandler={editUserhandler}
+                />
+            )
+          }
         </div>
-
-        {/* Table */}
-        <div className="p-4">
-
-            {
-                isLoading ?
-
-                    <div className="flex items-center justify-center py-20">
-                        <div
-                            className="flex flex-col items-center gap-4"
-                        >
-                            <Spinner className="size-8 text-blue-600" />
-
-                            <p className="text-sm text-gray-500">
-                                Loading Users...
-                            </p>
-                        </div>
-                    </div>
-
-                    :
-
-                    <div
-                        className="rounded-2xl border border-gray-100 overflow-hidden"
-                    >
-                        <DataTable
-                            columns={columns}
-                            data={filterData.length > 0 ? filterData : data}
-                            newlyAddedUserId={lastAddedUserId}
-                            page={page}
-                            totalPages={totalPages}
-                        />
-                    </div>
-            }
-        </div>
-
-        {/* Footer */}
-        <div
-            className="px-6 py-4 border-t border-gray-100 
-            flex flex-col md:flex-row md:items-center 
-            md:justify-between gap-3"
-        >
-            <p className="text-sm text-gray-500">
-                Showing{" "}
-                <span className="font-semibold text-gray-700">
-                    {(filterData.length > 0 ? filterData : data)?.length || 0}
-                </span>{" "}
-                users
-            </p>
-        </div>
-    </div>
-
-    {/* Delete Dialog */}
-    {
-        openDialog && (
-            <AlertDialogComponent
-                isOpen={openDialog}
-                id={id}
-                setOpenDialog={setOpenDialog}
-                deleteMethod={deleteRoleHandler}
-                message="Are you sure, you want to delete this?"
-            />
-        )
-    }
-
-    {/* Add/Edit Modal */}
-    {
-        isModalOpen && (
-            <AddUserModal
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-                addNewUser={addNewUser}
-                isEdit={isEdit}
-                setIsEdit={setIsEdit}
-                userEditData={userEditData}
-                editUserhandler={editUserhandler}
-            />
-        )
-    }
-</div>
       </>
     )
 }
