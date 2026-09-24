@@ -296,7 +296,7 @@ const User = () =>{
                   shadow-lg hover:shadow-xl transition-all duration-300"
               >
                   <UserPlus className="mr-2 h-5 w-5" />
-                  Add Employee
+                  Create User
               </Button>
           </div>
 
