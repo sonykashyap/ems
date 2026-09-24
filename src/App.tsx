@@ -33,11 +33,11 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<Spinner />}>
           <Toaster position="top-center" theme="light" />
-          <Button 
+          {/* <Button 
             className="fixed bottom-4 z-1 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg" 
             onClick={() => setIsChatbotOpen(!isChatbotOpen)}>
             ChatBot
-          </Button>
+          </Button> */}
           {isChatbotOpen && <Chatbot />}
           <Routes>
             {/* User protected Routes */}
@@ -45,7 +45,7 @@ function App() {
             <Route path="/" element={<PrivateAdminRoute />}>
               <Route index element={<Navigate to="/dashboard" />} />
               <Route path="dashboard" element={<Dashboard />} />
-               <Route path="users" element={<User />} />
+              <Route path="users" element={<User />} />
               <Route path="settings" element={<Setting />} />
               <Route path="users/profile" element={<Profile />} />
               <Route path="reports" element={<Reports />} />
