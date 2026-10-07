@@ -1,6 +1,7 @@
 import axiosInstance from '@/axios/axiosInstance';
 import {createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import ENDPOINTS from '@/config/api.js';
+import axios from 'axios';
 
 
 type roleIdType = {
@@ -139,6 +140,7 @@ export const deleteUserById = createAsyncThunk(
             return response;
         }catch(error){
             console.log("error while deleting user is ", error);
+            
         }
     }
 )
@@ -146,12 +148,17 @@ export const deleteUserById = createAsyncThunk(
 // Forgot password
 export const forgotPassword = createAsyncThunk(
     'user/forgotPassword',
-    async (payload) => {
+    async (payload, { rejectWithValue }) => {
         try{
             const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.forgotPassword(), payload);
             return result;
         }catch(error){
-            console.log("error: ", error);
+            if(axios.isAxiosError(error)) {
+                return rejectWithValue(
+                    error?.response?.data?.message || { message: "Something went wrong" }
+                );
+            }
+            
         }
     }
 );
@@ -352,8 +359,8 @@ const userReducer = createSlice({
         })
         .addCase(forgotPassword.rejected, (state,action)=>{
             state.toast = {
-                message: "Something went wrong. Please try after some time",
-                type: "success"
+                message: action.payload || "Failed to send email. Please try again",
+                type: "error"
             }
         })
         .addCase(getProfile.fulfilled, (state, action)=>{

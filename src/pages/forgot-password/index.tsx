@@ -22,18 +22,7 @@ const ForgotPassword = () => {
     });
 
     const onSubmit = async (data) => {
-        try{
-            const result = await dispatch(forgotPassword(data)).unwrap();
-            console.log("Successs is ", result);
-            // toast(`Email sent successfully`, {
-            //         classNames: {
-            //           toast: "!bg-green-200",
-            //           title: "font-bold !text-green-600",
-            //         }
-            //       });
-        }catch(error){
-            console.log("error:", error);
-        }
+        const result = await dispatch(forgotPassword(data)).unwrap();
     };
 
     const [email, setEmail] = useState<string>("");
@@ -42,7 +31,7 @@ const ForgotPassword = () => {
         console.log("Handle reset functionality", email);
     }
 
-      useEffect(() => {
+    useEffect(() => {
         if (!toastState.message) return;
       
         toast(toastState.message, {
@@ -58,7 +47,7 @@ const ForgotPassword = () => {
           },
         });
         dispatch(clearToast());
-      }, [toastState]);
+    }, [toastState]);
 
     return(
         <>
