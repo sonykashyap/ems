@@ -111,7 +111,7 @@ export const addUser = createAsyncThunk(
     }
 )
 
-
+//edit a user
 export const editUser = createAsyncThunk(
     "user/edit",
     async (values, {rejectWithValues}) =>{
@@ -158,7 +158,6 @@ export const forgotPassword = createAsyncThunk(
                     error?.response?.data?.message || { message: "Something went wrong" }
                 );
             }
-            
         }
     }
 );
@@ -166,12 +165,19 @@ export const forgotPassword = createAsyncThunk(
 // Reset password
 export const resetPassword = createAsyncThunk(
     'user/resetPassword',
-    async () => {
+    async (payload:any, { rejectWithValue }) => {
+        console.log("Payload is ", payload);
         try{
-            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.resetPassword())
-            console.log("Result is ", result);
+            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.resetPassword(payload), 
+            payload,
+            );
+            return result;
         }catch(error){
-            console.log("error: ", error);
+            if(axios.isAxiosError(error)) {
+                return rejectWithValue(
+                    error?.response?.data?.message || { message: "Something went wrong" }
+                );
+            }
         }
     }
 )
@@ -360,6 +366,18 @@ const userReducer = createSlice({
         .addCase(forgotPassword.rejected, (state,action)=>{
             state.toast = {
                 message: action.payload || "Failed to send email. Please try again",
+                type: "error"
+            }
+        })
+        .addCase(resetPassword.fulfilled, (state,action)=>{
+            state.toast = {
+                message: action.payload?.data?.message || "Password reset successfully. Please login with your new password",
+                type: "success"
+            }
+        })
+        .addCase(resetPassword.rejected, (state,action)=>{
+            state.toast = {
+                message: action.payload || "Failed to reset password. Please try again",
                 type: "error"
             }
         })

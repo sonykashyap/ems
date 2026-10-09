@@ -6,7 +6,7 @@ export default {
             delete: (userId) => `/user/${userId}`,
             edit: (userId) => `/edit-user/${userId}`,
             forgotPassword: () => `/forgot-password`,
-            resetPassword: () => `/reset-password`,
+            resetPassword: (data) => `/reset-password/${data.token}`,
         },
         roles: {
             list: (page) => `/roles?page=${page}`,
