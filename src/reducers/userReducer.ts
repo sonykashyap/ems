@@ -357,25 +357,35 @@ const userReducer = createSlice({
          .addCase(editUser.rejected, (state,action)=>{
             console.log("Rejected state");
         })
+        .addCase(forgotPassword.pending, (state,action)=>{
+            state.loading = true;
+        })
         .addCase(forgotPassword.fulfilled, (state,action)=>{
+            state.loading = false;
             state.toast = {
                 message: "Email sent successfully. Please check your email",
                 type: "success"
             }
         })
         .addCase(forgotPassword.rejected, (state,action)=>{
+            state.loading = false;
             state.toast = {
                 message: action.payload || "Failed to send email. Please try again",
                 type: "error"
             }
         })
+        .addCase(resetPassword.pending, (state,action)=>{
+           state.loading = true;
+        })
         .addCase(resetPassword.fulfilled, (state,action)=>{
+            state.loading = false;
             state.toast = {
                 message: action.payload?.data?.message || "Password reset successfully. Please login with your new password",
                 type: "success"
             }
         })
         .addCase(resetPassword.rejected, (state,action)=>{
+            state.loading = false;
             state.toast = {
                 message: action.payload || "Failed to reset password. Please try again",
                 type: "error"
