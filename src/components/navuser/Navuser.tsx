@@ -116,7 +116,7 @@ const Navuser = () => {
 
                                     <AvatarImage
                                         src={
-                                            userProfilePic.length > 0
+                                            userProfilePic && userProfilePic.length > 0
                                                 ? `${import.meta.env.VITE_BACKEND_HOST}/` + userProfilePic
                                                 : undefined
                                         }
