@@ -1,42 +1,115 @@
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { applyLeave } from '@/reducers/leavesReducer';
 import { clearToast } from '@/reducers/userReducer';
-import { e164 } from 'node_modules/zod/v4/core/regexes.cjs';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import z from 'zod';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export const employeeSchema = z.object({
-    leaveType: z.string().min(2, "Name must be at least 2 characters"),
-    totalDays: z.string().email("Invalid email address"),
-    role: z.string().min(1, "Role is required"),
-    age: z.number({ invalid_type_error: "Age must be a number" })
-        .min(18, "Minimum age is 18"),
-    isActive: z.boolean().optional(),
-});
 
-type leaveType = {
-    leaveType: string;
-    totalDays: number;
-    startDate: string;
-    endDate: string;
-    reasonForLeave: string;
-    attachment: File | null;
-}
+const leaveTypes = [
+  "Casual Leave",
+  "Sick Leave",
+  "Paid Leave",
+  "Emergency Leave",
+  "RH",
+] as const;
+
+export const employeeLeaveSchema = z
+  .object({
+    leaveType: z
+      .string()
+      .min(1, "Please select a leave type")
+      .refine(
+        (value) => leaveTypes.some((type) => type === value),
+        "Please select a valid leave type"
+      ),
+
+    totalDays: z.coerce
+      .number()
+      .min(1, "Total leave days must be at least 1")
+      .max(365, "Total leave days cannot exceed 365")
+      .refine(Number.isInteger, "Leave days must be a whole number"),
+
+    startDate: z
+      .string()
+      .min(1, "Start date is required"),
+
+    endDate: z
+      .string()
+      .min(1, "End date is required"),
+
+    ccTo: z.string().optional(),
+
+    reasonForLeave: z
+      .string()
+      .trim()
+      .min(10, "Reason must be at least 10 characters")
+      .max(500, "Reason cannot exceed 500 characters"),
+
+    // Attachment remains optional.
+    attachment: z.any().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.startDate &&
+      data.endDate &&
+      data.endDate < data.startDate
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["endDate"],
+        message: "End date cannot be before the start date",
+      });
+    }
+  });
+
+type LeaveFormValues = z.infer<typeof employeeLeaveSchema>;
+
+type LeaveState = {
+  leaveType: string;
+  totalDays: number;
+  startDate: string;
+  endDate: string;
+  reasonForLeave: string;
+  ccTo: string;
+  attachment: File | null;
+};
+
 
 
 const Leave = () =>{
 
     const dispatch = useAppDispatch();
     const toaster = useAppSelector(state=> state.leaveReducer.toast);
-    const [leaves, setLeaves] = useState<leaveType>({
-        leaveType: "",
-        totalDays:0,
-        startDate: "",
-        endDate: "",
-        reasonForLeave: "",
-        attachment: null
-    });
+    
+const [leaves, setLeaves] = useState<LeaveState>({
+  leaveType: "",
+  totalDays: 0,
+  startDate: "",
+  endDate: "",
+  reasonForLeave: "",
+  ccTo: "",
+  attachment: null,
+});
+
+const {
+  register,
+  handleSubmit: handleFormSubmit,
+  formState: { errors },
+} = useForm<LeaveFormValues>({
+  resolver: zodResolver(employeeLeaveSchema),
+  defaultValues: {
+    leaveType: "",
+    totalDays: undefined,
+    startDate: "",
+    endDate: "",
+    reasonForLeave: "",
+    ccTo: "",
+  },
+});
+
 
 
     const handleChange = (field: string, value:any) =>{
@@ -64,7 +137,6 @@ const Leave = () =>{
     }, [toaster]);
 
     const handleSubmit = () => {
-        console.log("Submit called");
         const user = JSON.parse(localStorage.getItem("userData") ?? "");
         const formData = new FormData();
         formData.append("leave_type", leaves.leaveType);
@@ -134,19 +206,31 @@ const Leave = () =>{
                                             Leave Type
                                         </label>
 
+                                        
                                         <select
-                                            className="w-full h-14 rounded-2xl border border-gray-200 
-                                            bg-gray-50 px-4 outline-none transition-all duration-300
-                                            focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                            onChange={(e)=>handleChange("leaveType", e.target.value)}
-                                        >
-                                            <option>Select Leave Type</option>
-                                            <option>Casual Leave</option>
-                                            <option>Sick Leave</option>
-                                            <option>Paid Leave</option>
-                                            <option>Emergency Leave</option>
-                                            <option>RH</option>
+                                            {...register("leaveType", {
+                                                onChange: (e) => handleChange("leaveType", e.target.value),
+                                            })}
+                                            className={`w-full h-14 rounded-2xl border bg-gray-50 px-4 outline-none transition-all duration-300 focus:ring-4 ${
+                                                errors.leaveType
+                                                ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                                                : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                                            }`}
+                                            >
+                                            <option value="">Select Leave Type</option>
+                                            <option value="Casual Leave">Casual Leave</option>
+                                            <option value="Sick Leave">Sick Leave</option>
+                                            <option value="Paid Leave">Paid Leave</option>
+                                            <option value="Emergency Leave">Emergency Leave</option>
+                                            <option value="RH">RH</option>
                                         </select>
+
+                                        {errors.leaveType && (
+                                            <p className="mt-2 text-sm font-medium text-red-500">
+                                                {errors.leaveType.message}
+                                            </p>
+                                        )}
+
                                     </div>
 
                                     {/* Total Days */}
@@ -155,14 +239,31 @@ const Leave = () =>{
                                             Total Days
                                         </label>
 
+                                        
                                         <input
                                             type="number"
+                                            min="1"
+                                            max="365"
+                                            step="1"
                                             placeholder="Enter total leave days"
-                                            className="w-full h-14 rounded-2xl border border-gray-200 
-                                            bg-gray-50 px-4 outline-none transition-all duration-300
-                                            focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                            onChange={(e)=>handleChange("totalDays", e.target.value)}
+                                            {...register("totalDays", {
+                                                valueAsNumber: true,
+                                                onChange: (e) =>
+                                                handleChange("totalDays", Number(e.target.value) || 0),
+                                            })}
+                                            className={`w-full h-14 rounded-2xl border bg-gray-50 px-4 outline-none transition-all duration-300 focus:ring-4 ${
+                                                errors.totalDays
+                                                ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                                                : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                                            }`}
                                         />
+
+                                        {errors.totalDays && (
+                                        <p className="mt-2 text-sm font-medium text-red-500">
+                                            {errors.totalDays.message}
+                                        </p>
+                                        )}
+
                                     </div>
 
                                     {/* Start Date */}
@@ -171,13 +272,25 @@ const Leave = () =>{
                                             Start Date
                                         </label>
 
+                                        
                                         <input
-                                            type="date"
-                                            className="w-full h-14 rounded-2xl border border-gray-200 
-                                            bg-gray-50 px-4 outline-none transition-all duration-300
-                                            focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                            onChange={(e)=> handleChange("startDate",e.target.value)}
+                                        type="date"
+                                        {...register("startDate", {
+                                            onChange: (e) => handleChange("startDate", e.target.value),
+                                        })}
+                                        className={`w-full h-14 rounded-2xl border bg-gray-50 px-4 outline-none transition-all duration-300 focus:ring-4 ${
+                                            errors.startDate
+                                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                                            : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                                        }`}
                                         />
+
+                                        {errors.startDate && (
+                                        <p className="mt-2 text-sm font-medium text-red-500">
+                                            {errors.startDate.message}
+                                        </p>
+                                        )}
+
                                     </div>
 
                                     {/* End Date */}
@@ -186,13 +299,25 @@ const Leave = () =>{
                                             End Date
                                         </label>
 
+                                        
                                         <input
-                                            type="date"
-                                            className="w-full h-14 rounded-2xl border border-gray-200 
-                                            bg-gray-50 px-4 outline-none transition-all duration-300
-                                            focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                            onChange={(e)=> handleChange("endDate",e.target.value)}
+                                        type="date"
+                                        {...register("endDate", {
+                                            onChange: (e) => handleChange("endDate", e.target.value),
+                                        })}
+                                        className={`w-full h-14 rounded-2xl border bg-gray-50 px-4 outline-none transition-all duration-300 focus:ring-4 ${
+                                            errors.endDate
+                                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                                            : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                                        }`}
                                         />
+
+                                        {errors.endDate && (
+                                        <p className="mt-2 text-sm font-medium text-red-500">
+                                            {errors.endDate.message}
+                                        </p>
+                                        )}
+
                                     </div>
                                     {/* Applying To */}
                                     <div>
@@ -220,11 +345,12 @@ const Leave = () =>{
                                             CC To
                                         </label>
 
+                                        
                                         <select
-                                            className="w-full h-14 rounded-2xl border border-gray-200 
-                                            bg-gray-50 px-4 outline-none transition-all duration-300
-                                            focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                            onChange={(e)=> handleChange("ccTo", e.target.value)}
+                                            {...register("ccTo", {
+                                                onChange: (e) => handleChange("ccTo", e.target.value),
+                                            })}
+                                            className="w-full h-14 rounded-2xl border border-gray-200 bg-gray-50 px-4 outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                                         >
                                             <option value="">Select Top Manager</option>
                                             <option value="Amit Verma">Amit Verma</option>
@@ -241,15 +367,28 @@ const Leave = () =>{
                                         Reason for Leave
                                     </label>
 
+                                    
                                     <textarea
                                         rows={5}
+                                        maxLength={500}
                                         placeholder="Write your reason here..."
-                                        className="w-full rounded-2xl border border-gray-200 
-                                        bg-gray-50 p-4 outline-none resize-none
-                                        transition-all duration-300
-                                        focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                                        onChange={(e)=> handleChange("reasonForLeave", e.target.value) }
+                                        {...register("reasonForLeave", {
+                                            onChange: (e) =>
+                                            handleChange("reasonForLeave", e.target.value),
+                                        })}
+                                        className={`w-full rounded-2xl border bg-gray-50 p-4 outline-none resize-none transition-all duration-300 focus:ring-4 ${
+                                            errors.reasonForLeave
+                                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+                                            : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                                        }`}
                                     />
+
+                                    {errors.reasonForLeave && (
+                                        <p className="mt-2 text-sm font-medium text-red-500">
+                                            {errors.reasonForLeave.message}
+                                        </p>
+                                    )}
+
                                 </div>
 
                                 {/* Attachment */}
@@ -285,15 +424,15 @@ const Leave = () =>{
                                         Cancel
                                     </button>
 
+                                    
                                     <button
-                                        className="flex-1 h-14 rounded-2xl bg-gradient-to-r 
-                                        from-blue-600 to-indigo-600 text-white font-semibold
-                                        shadow-lg hover:shadow-xl hover:scale-[1.01]
-                                        transition-all duration-300"
-                                        onClick={handleSubmit}
+                                    type="button"
+                                    className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all duration-300"
+                                    onClick={handleFormSubmit(handleSubmit)}
                                     >
-                                        Submit Leave Request
+                                    Submit Leave Request
                                     </button>
+
                                 </div>
                             </div>
                         </div>
