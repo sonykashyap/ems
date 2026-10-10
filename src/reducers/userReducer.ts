@@ -111,7 +111,7 @@ export const addUser = createAsyncThunk(
     }
 )
 
-
+//edit a user
 export const editUser = createAsyncThunk(
     "user/edit",
     async (values, {rejectWithValues}) =>{
@@ -135,7 +135,6 @@ export const deleteUserById = createAsyncThunk(
     "user/deleteUserByid",
     async (userId : string)=>{
         try{
-            console.log("Id to delete is ", userId);
             const response = await axiosInstance.delete(ENDPOINTS.ENDPOINTS.users.delete(userId));
             return response;
         }catch(error){
@@ -151,6 +150,7 @@ export const forgotPassword = createAsyncThunk(
     async (payload, { rejectWithValue }) => {
         try{
             const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.forgotPassword(), payload);
+            console.log("Forgot password result is ", result);
             return result;
         }catch(error){
             if(axios.isAxiosError(error)) {
@@ -158,7 +158,6 @@ export const forgotPassword = createAsyncThunk(
                     error?.response?.data?.message || { message: "Something went wrong" }
                 );
             }
-            
         }
     }
 );
@@ -166,12 +165,19 @@ export const forgotPassword = createAsyncThunk(
 // Reset password
 export const resetPassword = createAsyncThunk(
     'user/resetPassword',
-    async () => {
+    async (payload:any, { rejectWithValue }) => {
+        console.log("Payload is ", payload);
         try{
-            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.resetPassword())
-            console.log("Result is ", result);
+            const result = await axiosInstance.post(ENDPOINTS.ENDPOINTS.users.resetPassword(payload), 
+            payload,
+            );
+            return result;
         }catch(error){
-            console.log("error: ", error);
+            if(axios.isAxiosError(error)) {
+                return rejectWithValue(
+                    error?.response?.data?.message || { message: "Something went wrong" }
+                );
+            }
         }
     }
 )
@@ -351,15 +357,37 @@ const userReducer = createSlice({
          .addCase(editUser.rejected, (state,action)=>{
             console.log("Rejected state");
         })
+        .addCase(forgotPassword.pending, (state,action)=>{
+            state.loading = true;
+        })
         .addCase(forgotPassword.fulfilled, (state,action)=>{
+            state.loading = false;
             state.toast = {
                 message: "Email sent successfully. Please check your email",
                 type: "success"
             }
         })
-        .addCase(forgotPassword.rejected, (state,action)=>{
+        .addCase(forgotPassword.rejected, (state,action: any)=>{
+            state.loading = false;
             state.toast = {
-                message: action.payload || "Failed to send email. Please try again",
+                message: action.payload.message || "Failed to send email. Please try again",
+                type: "error"
+            }
+        })
+        .addCase(resetPassword.pending, (state,action)=>{
+           state.loading = true;
+        })
+        .addCase(resetPassword.fulfilled, (state,action)=>{
+            state.loading = false;
+            state.toast = {
+                message: action.payload?.data?.message || "Password reset successfully. Please login with your new password",
+                type: "success"
+            }
+        })
+        .addCase(resetPassword.rejected, (state,action: any)=>{
+            state.loading = false;
+            state.toast = {
+                message: action.payload || "Failed to reset password. Please try again",
                 type: "error"
             }
         })
@@ -405,7 +433,6 @@ const userReducer = createSlice({
             }
         })
         .addCase(filterUsers.fulfilled, (state,action)=>{
-            console.log("search acion called");
             state.filterData = action.payload.data.data;
         })
         .addCase(filterUsers.rejected, (state,action)=>{

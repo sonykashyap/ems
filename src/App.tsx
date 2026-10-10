@@ -2,7 +2,8 @@ import React, { Suspense, useState } from 'react'
 import './App.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { Toaster } from '@/components/ui/sonner';
-import FortgotPassword from './pages/forgot-password/index';
+import ForgotPassword from './pages/forgot-password/index';
+import ResetPassword from './pages/reset-password/index';
 import Chatbot from './components/chatbot/Chatbot';
 import { Button } from './components/ui/button';
 const Setting = React.lazy(()=> import('@/pages/settings/Setting'));
@@ -71,7 +72,8 @@ function App() {
 
             {/* unprotected public routes */}
             <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<FortgotPassword />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<PageNotFound />} />
             {/* <Route path='/admin/login' element={<AdminLogin />} /> */}

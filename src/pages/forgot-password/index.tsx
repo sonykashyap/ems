@@ -9,9 +9,11 @@ import {toast} from 'sonner';
 import { RootState } from "@/store";
 import { Mail } from "lucide-react";
 import { Link } from "react-router";
+import Spinner from "@/components/spinner/Spinner";
 
 const ForgotPassword = () => {
     const dispatch = useAppDispatch();
+    const loading = useAppSelector((state:RootState)=> state.userReducer.loading);
     const toastState = useAppSelector((state:RootState)=> state.userReducer.toast);
     const resetSchema = z.object({
         email: z.string().email("invalid email. Please enter a proper email")
@@ -266,7 +268,7 @@ const ForgotPassword = () => {
                     hover:shadow-[0_18px_40px_rgba(139,92,246,0.35)]
                 "
             >
-                Reset Password
+                {loading ? <Spinner /> : "Reset Password"}
             </button>
 
         </form>
